@@ -1,4 +1,4 @@
-﻿name: CI — format & lint
+name: CI � format & lint
 
 on:
   pull_request:
@@ -11,7 +11,8 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [18.x, 20.x]
+        node-version: [24.x]
+
 
     steps:
       - name: Checkout code
@@ -34,7 +35,7 @@ jobs:
         run: npm ci
 
       - name: Check formatting with Biome
-        run: npx @biomejs/biome format --check .
+        run: npx @biomejs/biome check .
 
       - name: Run Biome linter
         run: npx @biomejs/biome lint .
