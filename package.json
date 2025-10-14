@@ -26,5 +26,9 @@
     "tailwindcss": "^4",
     "typescript": "^5"
   },
-  "lint-staged": "{*.{js,jsx,ts,tsx,json,css,scss,md}:[npx @biomejs/biome format --write,git add]}"
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx,json,css,scss,md}": [
+      "npx @biomejs/biome format --write"
+    ]
+  }
 }
