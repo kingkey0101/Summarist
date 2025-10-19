@@ -24,7 +24,7 @@ if (!platformPkg) {
       withFileTypes: true,
     });
     const found = all.find(
-      (d) => d.isDirectory() && d.name.startsWith("lightningcss-"),
+      (d) => d.isDirectory() && d.name.startsWith("lightningcss-")
     );
     if (found) platformPkg = found.name;
   } catch (_e) {
@@ -33,7 +33,15 @@ if (!platformPkg) {
 }
 
 // final fallback to the generic name (may fail if not installed)
-platformPkg = platformPkg || "lightningcss-win32-x64-msvc";
+// platformPkg = platformPkg || "lightningcss-win32-x64-msvc";
+platformPkg = platformPkg || null;
+
+if (!platformPkg) {
+  console.log(
+    "no platform-specific lightningcss package installed; skipping shim creation"
+  );
+  process.exit(0);
+}
 
 function findLightningcssDirs(dir) {
   const results = [];
