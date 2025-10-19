@@ -9,6 +9,8 @@
     "lint": "biome check",
     "format": "biome format --write",
     "format:check": "biome format --check",
+    "format:check": "biome format --check",
+    "format:check": "biome format --check",
     "type-check": "tsc --noEmit",
     "test": "echo \"No tests\" && exit 0"
   },
