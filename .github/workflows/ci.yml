@@ -25,7 +25,7 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-  lint:
+   lint:
     needs: setup
     runs-on: ubuntu-latest
     steps:
@@ -44,8 +44,13 @@ jobs:
       - name: Run Biome lint
         run: npm run lint
 
-      - name: Run Biome format check
-        run: npm run format:check --if-present
+      - name: Run Biome format (apply)
+        run: npm run format
+
+      - name: Verify no formatting changes
+        run: |
+          # fail if formatting changed files
+          git --no-pager diff --exit-code || (echo "Formatting changed files. Run 'npm run format' and commit the result." && exit 1)
 
   typecheck:
     needs: setup
