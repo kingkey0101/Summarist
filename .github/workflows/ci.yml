@@ -102,7 +102,7 @@ jobs:
 
       - name: Build
         env:
-          CSS_TRANSFORMER_WASM: 1
+          CSS_TRANSFORMER_WASM: 0
         run: npm run build
 
   test:
