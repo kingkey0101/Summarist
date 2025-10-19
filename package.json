@@ -3,11 +3,14 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "biome check",
-    "format": "biome format --write"
+  "dev": "cross-env CSS_TRANSFORMER_WASM=1 next dev",
+  "build": "next build",
+  "start": "next start",
+  "lint": "biome check",
+  "format": "biome format --write", "format:check": "biome format --check",
+  "type-check": "tsc --noEmit",
+  "test": "echo \"No tests\" && exit 0"
+
   },
   "dependencies": {
     "react": "19.1.0",
@@ -24,3 +27,4 @@
     "@biomejs/biome": "2.2.0"
   }
 }
+
