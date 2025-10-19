@@ -99,6 +99,10 @@ jobs:
 
       - name: Install
         run: npm ci
+      - name: Rebuild or install lightningcss (fix missing pkg)
+        run: |
+          # try to rebuild the native/pkg artifacts, otherwise install lightningcss
+          npm rebuild lightningcss || npm install --no-save lightningcss@latest
 
       - name: Build
         env:
