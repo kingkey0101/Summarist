@@ -80,6 +80,17 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Debug package.json bytes
+        shell: bash
+        run: |
+          echo "First 32 bytes (hex):"
+          head -c 32 package.json | xxd -p | sed -E 's/(..)/\1 /g' || true
+
+      - name: Validate package.json UTF-8 parse
+        shell: bash
+        run: |
+          node -e "try { const fs=require('fs'); const s=fs.readFileSync('package.json','utf8'); JSON.parse(s); console.log('package.json JSON OK'); } catch(e) { console.error('package.json parse error:', e.message); process.exit(2) }"
+
       - name: Use Node.js
         uses: actions/setup-node@v4
         with:
