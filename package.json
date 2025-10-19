@@ -1,29 +1,29 @@
 ﻿{
-    "name":  "summarist-project",
-    "version":  "0.1.0",
-    "private":  true,
-    "scripts":  {
-                    "dev":  "cross-env CSS_TRANSFORMER_WASM=1 next dev",
-                    "build":  "next build",
-                    "start":  "next start",
-                    "lint":  "biome check",
-                    "format":  "biome format --write",
-                    "format:check":  "biome format --check",
-                    "type-check":  "tsc --noEmit",
-                    "test":  "echo \"No tests\" \u0026\u0026 exit 0"
-                },
-    "dependencies":  {
-                         "react":  "19.1.0",
-                         "react-dom":  "19.1.0",
-                         "next":  "15.5.6"
-                     },
-    "devDependencies":  {
-                            "typescript":  "^5",
-                            "@types/node":  "^20",
-                            "@types/react":  "^19",
-                            "@types/react-dom":  "^19",
-                            "@tailwindcss/postcss":  "^4",
-                            "tailwindcss":  "^4",
-                            "@biomejs/biome":  "2.2.0"
-                        }
+  "name": "summarist-project",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "cross-env CSS_TRANSFORMER_WASM=1 next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "biome check",
+    "format": "biome format --write",
+    "format:check": "biome format --check",
+    "type-check": "tsc --noEmit",
+    "test": "echo \"No tests\" \u0026\u0026 exit 0"
+  },
+  "dependencies": {
+    "react": "19.1.0",
+    "react-dom": "19.1.0",
+    "next": "15.5.6"
+  },
+  "devDependencies": {
+    "typescript": "^5",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "@tailwindcss/postcss": "^4",
+    "tailwindcss": "^4",
+    "@biomejs/biome": "2.2.0"
+  }
 }
