@@ -2,9 +2,11 @@ name: CI
 
 on:
   push:
-    branches: ['**']
+    branches:
+      - '**'
   pull_request:
-    branches: ['**']
+    branches:
+      - '**'
 
 jobs:
   setup:
@@ -25,7 +27,7 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-   lint:
+  lint:
     needs: setup
     runs-on: ubuntu-latest
     steps:
@@ -58,13 +60,16 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
       - name: Use Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
           cache: 'npm'
-      - name: Install
+
+      - name: Install dependencies
         run: npm ci
+
       - name: Type check
         run: npm run type-check --if-present
 
@@ -95,12 +100,15 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
       - name: Use Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
           cache: 'npm'
+
       - name: Install
         run: npm ci
+
       - name: Run tests
         run: npm test --if-present
