@@ -1,4 +1,4 @@
-{
+﻿{
   "name": "summarist-project",
   "version": "0.1.0",
   "private": true,
@@ -9,10 +9,8 @@
     "lint": "biome check",
     "format": "biome format --write",
     "format:check": "biome format --check",
-    "format:check": "biome format --check",
-    "format:check": "biome format --check",
     "type-check": "tsc --noEmit",
-    "test": "echo \"No tests\" && exit 0"
+    "test": "echo \"No tests\" \u0026\u0026 exit 0"
   },
   "dependencies": {
     "react": "19.1.0",
