@@ -20,11 +20,8 @@ let platformPkg = candidates.find((c) => fs.existsSync(nm(c)));
 // fallback: try to discover any package starting with "lightningcss-"
 if (!platformPkg) {
   try {
-    const all = fs.readdirSync(path.join(root, "node_modules"), {
-      withFileTypes: true,
-    });
     const found = all.find(
-      (d) => d.isDirectory() && d.name.startsWith("lightningcss-")
+      (d) => d.isDirectory() && d.name.startsWith("lightningcss-"),
     );
     if (found) platformPkg = found.name;
   } catch (_e) {
@@ -38,7 +35,7 @@ platformPkg = platformPkg || null;
 
 if (!platformPkg) {
   console.log(
-    "no platform-specific lightningcss package installed; skipping shim creation"
+    "no platform-specific lightningcss package installed; skipping shim creation",
   );
   process.exit(0);
 }
