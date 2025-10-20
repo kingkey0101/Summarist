@@ -8,6 +8,9 @@ export const metadata = {
   title: "Home - Summarist",
   description:
     "Summarist: concise book summaries and briefcasts to help you learn faster.",
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
+  ),
   openGraph: {
     title: "Summarist",
     description:
@@ -137,7 +140,7 @@ export default function Home() {
                 <div className="statistics__data">
                   <div className="statistics__data--number">91%</div>
                   <div className="statistics__data--title">
-                    of Summarist members <b>report feeling more productive</b>{" "}
+                    of Summarist members <b>report feeling more productive</b>
                     after incorporating the service into their daily routine.
                   </div>
                 </div>
@@ -203,7 +206,7 @@ export default function Home() {
                   </div>
                 </div>
                 <div className="review__body">
-                  I love this app! It provides{" "}
+                  I love this app! It provides
                   <b>concise and accurate summaries</b> of books in a way that
                   is easy to understand. It's also very user-friendly and
                   intuitive.
@@ -219,8 +222,8 @@ export default function Home() {
                 </div>
                 <div className="review__body">
                   This app is a great way to get the main takeaways from a book
-                  without having to read the entire thing.{" "}
-                  <b>The summaries are well-written and informative.</b>{" "}
+                  without having to read the entire thing.
+                  <b>The summaries are well-written and informative.</b>
                   Definitely worth downloading.
                 </div>
               </div>
@@ -233,7 +236,7 @@ export default function Home() {
                   </div>
                 </div>
                 <div className="review__body">
-                  If you're a busy person who{" "}
+                  If you're a busy person who
                   <b>loves reading but doesn't have the time</b> to read every
                   book in full, this app is for you! The summaries are thorough
                   and provide a great overview of the book's content.
@@ -242,7 +245,9 @@ export default function Home() {
             </div>
 
             <div className="reviews__btn--wrapper">
-              <button className="btn home__cta--btn">Login</button>
+              <Link href="/login" className="btn home__cta--btn">
+                Login
+              </Link>
             </div>
           </div>
         </div>
@@ -289,16 +294,24 @@ export default function Home() {
                 <div className="footer__link--title">Actions</div>
                 <div>
                   <div className="footer__link--wrapper">
-                    <a className="footer__link">Summarist Magazine</a>
+                    <a href="/" className="footer__link">
+                      Summarist Magazine
+                    </a>
                   </div>
                   <div className="footer__link--wrapper">
-                    <a className="footer__link">Cancel Subscription</a>
+                    <a href="/" className="footer__link">
+                      Cancel Subscription
+                    </a>
                   </div>
                   <div className="footer__link--wrapper">
-                    <a className="footer__link">Help</a>
+                    <a href="/" className="footer__link">
+                      Help
+                    </a>
                   </div>
                   <div className="footer__link--wrapper">
-                    <a className="footer__link">Contact us</a>
+                    <a href="/" className="footer__link">
+                      Contact us
+                    </a>
                   </div>
                 </div>
               </div>
@@ -307,16 +320,24 @@ export default function Home() {
                 <div className="footer__link--title">Useful Links</div>
                 <div>
                   <div className="footer__link--wrapper">
-                    <a className="footer__link">Pricing</a>
+                    <a href="/" className="footer__link">
+                      Pricing
+                    </a>
                   </div>
                   <div className="footer__link--wrapper">
-                    <a className="footer__link">Summarist Business</a>
+                    <a href="/" className="footer__link">
+                      Summarist Business
+                    </a>
                   </div>
                   <div className="footer__link--wrapper">
-                    <a className="footer__link">Gift Cards</a>
+                    <a href="/" className="footer__link">
+                      Gift Cards
+                    </a>
                   </div>
                   <div className="footer__link--wrapper">
-                    <a className="footer__link">Authors &amp; Publishers</a>
+                    <a href="/" className="footer__link">
+                      Authors &amp; Publishers
+                    </a>
                   </div>
                 </div>
               </div>
@@ -325,16 +346,24 @@ export default function Home() {
                 <div className="footer__link--title">Company</div>
                 <div>
                   <div className="footer__link--wrapper">
-                    <a className="footer__link">About</a>
+                    <a href="/" className="footer__link">
+                      About
+                    </a>
                   </div>
                   <div className="footer__link--wrapper">
-                    <a className="footer__link">Careers</a>
+                    <a href="/" className="footer__link">
+                      Careers
+                    </a>
                   </div>
                   <div className="footer__link--wrapper">
-                    <a className="footer__link">Partners</a>
+                    <a href="/" className="footer__link">
+                      Partners
+                    </a>
                   </div>
                   <div className="footer__link--wrapper">
-                    <a className="footer__link">Code of Conduct</a>
+                    <a href="/" className="footer__link">
+                      Code of Conduct
+                    </a>
                   </div>
                 </div>
               </div>
@@ -343,16 +372,24 @@ export default function Home() {
                 <div className="footer__link--title">Other</div>
                 <div>
                   <div className="footer__link--wrapper">
-                    <a className="footer__link">Sitemap</a>
+                    <a href="/" className="footer__link">
+                      Sitemap
+                    </a>
                   </div>
                   <div className="footer__link--wrapper">
-                    <a className="footer__link">Legal Notice</a>
+                    <a href="/" className="footer__link">
+                      Legal Notice
+                    </a>
                   </div>
                   <div className="footer__link--wrapper">
-                    <a className="footer__link">Terms of Service</a>
+                    <a href="/" className="footer__link">
+                      Terms of Service
+                    </a>
                   </div>
                   <div className="footer__link--wrapper">
-                    <a className="footer__link">Privacy Policies</a>
+                    <a href="/" className="footer__link">
+                      Privacy Policies
+                    </a>
                   </div>
                 </div>
               </div>
