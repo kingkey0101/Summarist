@@ -18,6 +18,7 @@
     --foreground: #ededed;
   }
 }
+
 body {
   background: var(--background);
   color: var(--foreground);
@@ -25,8 +26,6 @@ body {
 }
 
 * {
-  margin: 0;
-  padding: 0;
   box-sizing: border-box;
   font-family: "Roboto", sans-serif;
 }
@@ -249,7 +248,7 @@ button:disabled {
   font-size: 24px;
   color: #032b41;
   margin-bottom: 16px;
-  font-weight: 500;
+  /* font-weight: 700; */
 }
 
 .features__sub--title {
@@ -367,6 +366,7 @@ button:disabled {
 .reviews__btn--wrapper {
   display: flex;
   justify-content: center;
+  padding-bottom: 48px;
 }
 
 /* NUMBERS */
@@ -385,6 +385,7 @@ button:disabled {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 40px;
+  padding-bottom: 12px;
 }
 
 .numbers__icon {
@@ -427,6 +428,7 @@ button:disabled {
   justify-content: space-between;
   font-size: 14px;
   margin: 32px auto 64px;
+  padding-top: 50px;
 }
 
 .footer__block {
@@ -498,7 +500,72 @@ button:disabled {
 
 .footer__copyright {
   color: #032b41;
-  font-weight: 500;
+  margin-bottom: 40px;
+}
+
+.auth-modal .signup-static {
+  pointer-events: none;
+  cursor: default;
+}
+
+.auth-modal .signup-static:hover {
+  color: #ffffff;
+}
+
+/* inputs */
+.input {
+  display: block;
+  width: 100%;
+  padding: 0.75rem 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  background: white;
+  outline: none;
+  font-size: 0.95rem;
+  color: #0f172a;
+}
+
+.input:focus {
+  border-color: #60a5fa;
+  box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.12);
+}
+
+/* generic btn classes used in modal */
+.btn {
+  padding: 0.6rem 1rem;
+  border-radius: 8px;
+  background: #0f172a;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+}
+
+.btn.ghost {
+  background: transparent;
+  color: inherit;
+  border: 1px solid #e2e8f0;
+}
+
+/* google button fallback */
+.google-btn {
+  background: #357ae8;
+  /* google-ish blue */
+  color: white;
+  padding: 0.55rem 0.75rem;
+  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.google-logo {
+  width: 28px;
+  height: 28px;
+}
+
+/* small helpers */
+.text-red-600 {
+  color: #dc2626;
 }
 
 @media (max-width: 768px) {

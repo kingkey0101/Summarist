@@ -1,6 +1,9 @@
 import Image from "next/image";
 import Link from "next/link";
 import { AiFillAudio, AiFillBulb, AiFillFileText } from "react-icons/ai";
+import { BiCrown } from "react-icons/bi";
+import { BsStarFill, BsStarHalf } from "react-icons/bs";
+import { RiLeafLine } from "react-icons/ri";
 import Nav from "./components/Nav";
 import Stars from "./components/Stars";
 
@@ -69,27 +72,33 @@ export default function Home() {
                 <div className="features__icon">
                   <AiFillFileText />
                 </div>
-                <div className="features__title">Read or listen</div>
+                <div className="features__title font-semibold">
+                  Read or listen
+                </div>
                 <div className="features__sub--title">
-                  Save time by getting the core ideas from the best books.
+                  <h1>
+                    Save time by getting the core ideas from the best books.
+                  </h1>
                 </div>
               </div>
               <div className="features">
                 <div className="features__icon">
                   <AiFillBulb />
                 </div>
-                <div className="features__title">Find your next read</div>
+                <div className="features__title font-semibold">
+                  Find your next read
+                </div>
                 <div className="features__sub--title">
-                  Explore book lists and personalized recommendations.
+                  <h1>Explore book lists and personalized recommendations.</h1>
                 </div>
               </div>
               <div className="features">
                 <div className="features__icon">
                   <AiFillAudio />
                 </div>
-                <div className="features__title">Briefcasts</div>
+                <div className="features__title font-semibold">Briefcasts</div>
                 <div className="features__sub--title">
-                  Gain valuable insights from briefcasts
+                  <h1>Gain valuable insights from briefcasts</h1>
                 </div>
               </div>
             </div>
@@ -257,28 +266,44 @@ export default function Home() {
         <div className="container">
           <div className="row">
             <div className="section__title">
-              Start growing with Summarist now
+              <h1>Start growing with Summarist now</h1>
             </div>
             <div className="numbers__wrapper">
               <div className="numbers">
-                <div className="numbers__icon"></div>
-                <div className="numbers__title">3 Million</div>
+                <div className="numbers__icon">
+                  <BiCrown />
+                </div>
+                <div className="numbers__title">
+                  <h1>3 Million</h1>
+                </div>
                 <div className="numbers__sub--title">
-                  Downloads on all platforms
+                  <h2>Downloads on all platforms</h2>
                 </div>
               </div>
               <div className="numbers">
-                <div className="numbers__icon numbers__star--icon"></div>
-                <div className="numbers__title">4.5 Stars</div>
+                <div className="numbers__icon numbers__star--icon">
+                  <BsStarFill />
+                  <BsStarFill />
+                  <BsStarFill />
+                  <BsStarFill />
+                  <BsStarHalf />
+                </div>
+                <div className="numbers__title">
+                  <h1>4.5 Stars</h1>
+                </div>
                 <div className="numbers__sub--title">
-                  Average ratings on iOS and Google Play
+                  <h2>Average ratings on iOS and Google Play</h2>
                 </div>
               </div>
               <div className="numbers">
-                <div className="numbers__icon"></div>
-                <div className="numbers__title">97%</div>
+                <div className="numbers__icon">
+                  <RiLeafLine />
+                </div>
+                <div className="numbers__title">
+                  <h1>97%</h1>
+                </div>
                 <div className="numbers__sub--title">
-                  Of Summarist members create a better reading habit
+                  <h2>Of Summarist members create a better reading habit</h2>
                 </div>
               </div>
             </div>
@@ -395,7 +420,7 @@ export default function Home() {
               </div>
             </div>
 
-            <div className="footer__copyright--wrapper">
+            <div className="footer__copyright--wrapper font-semibold">
               <div className="footer__copyright">
                 Copyright © 2023 Summarist.
               </div>

@@ -70,6 +70,12 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Install Biome CLI (linux)
+        run: npm install -g @biomejs/biome@latest
+
+      - name: Run lint
+        run: npm run lint
+
       - name: Type check
         run: npm run type-check --if-present
 

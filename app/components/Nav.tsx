@@ -1,5 +1,8 @@
+"use effect";
+
 import Image from "next/image";
 import Link from "next/link";
+import LoginButton from "./LoginButton";
 
 export default function Nav() {
   return (
@@ -17,8 +20,8 @@ export default function Nav() {
         </figure>
         <ul className="nav__list--wrapper">
           <li className="nav__list nav__list--login">
-            <Link href={"/login"} className="home__cta--btn">
-              Login
+            <Link href={"/"} className="home__cta--btn">
+              <LoginButton />
             </Link>
           </li>
           <li className="nav__list nav__list--mobile">About</li>
