@@ -7,7 +7,8 @@ jobs:
   regen:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout (full history)
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
@@ -17,25 +18,33 @@ jobs:
           node-version: '20'
           cache: 'npm'
 
-      - name: Remove node_modules & lockfile
+      - name: Clean workspace
         run: |
           rm -rf node_modules package-lock.json || true
+          git status --porcelain || true
 
       - name: Install (generate lockfile on linux)
         run: npm ci
 
-      - name: Show native artifacts
+      - name: Show native artifacts (diagnostics)
         run: |
           echo "Found .node files:"
-          find node_modules -type f -name '*.node' -maxdepth 6 | head -n 20 || true
+          find node_modules -type f -name '*.node' -maxdepth 6 | head -n 50 || true
+          echo "lightningcss contents:"
           ls -la node_modules/lightningcss || true
+          echo "tailwind oxide dirs:"
+          find node_modules -type d -name "*oxide*" -print | head -n 20 || true
 
       - name: Commit package-lock.json
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add package-lock.json
-          git commit -m "chore: regenerate package-lock.json on linux" || echo "no changes to commit"
-          git push
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          git add package-lock.json || true
+          if git diff --staged --quiet; then
+            echo "No changes to package-lock.json"
+          else
+            git commit -m "chore: regenerate package-lock.json on linux" || true
+            git push origin HEAD:$(echo "${GITHUB_REF#refs/heads/}" || echo "main")
+          fi
