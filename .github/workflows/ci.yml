@@ -96,6 +96,8 @@ jobs:
   build:
     needs: [setup, lint, typecheck]
     runs-on: ubuntu-latest
+    env:
+      CSS_TRANSFORMER_WASM: "1"
     steps:
       - name: Checkout
         uses: actions/checkout@v4
