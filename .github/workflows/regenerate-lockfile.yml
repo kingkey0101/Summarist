@@ -33,8 +33,9 @@ jobs:
 
       - name: Install dependencies (for formatter / scripts)
         run: |
-         # install node_modules now that package-lock.json exists
-         npm ci
+          # install node_modules now that package-lock.json exists
+          # keep dev deps for formatter, but skip optional native packages
+          npm ci --omit=optional
 
       - name: Format files
         run: |
@@ -61,7 +62,7 @@ jobs:
           if git diff --staged --quiet; then
             echo "No changes to package-lock.json"
           else
-            git commit -m "chore: regenerate package-lock.json on linux" || true
+            git commit -m "chore: regenerate package-lock.json on linux [skip ci]" || true
             git push origin HEAD:$(echo "${GITHUB_REF#refs/heads/}" || echo "main")
           fi
          
