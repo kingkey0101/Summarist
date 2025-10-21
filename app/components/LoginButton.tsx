@@ -2,7 +2,7 @@
 
 import { onAuthStateChanged, type User } from "firebase/auth";
 import { useEffect, useState } from "react";
-import { auth } from "@/lib/firebaseClient";
+import { getFirebaseAuth } from "@/lib/firebaseClient";
 import AuthModal from "./AuthModal";
 
 export default function LoginButton() {
@@ -10,6 +10,8 @@ export default function LoginButton() {
   const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
+    const auth = getFirebaseAuth();
+    if (!auth) return;
     const unsub = onAuthStateChanged(auth, (u) => setUser(u));
     return () => unsub();
   }, []);

@@ -9,7 +9,7 @@ import {
   type User,
 } from "firebase/auth";
 import { useEffect, useState } from "react";
-import { auth } from "../../lib/firebaseClient";
+import { getFirebaseAuth } from "../../lib/firebaseClient";
 
 type Props = {
   isOpen: boolean;
@@ -25,9 +25,11 @@ export default function AuthModal({ isOpen, onClose }: Props) {
   const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
+    const auth = getFirebaseAuth();
+    if (!auth) return;
     const unsub = onAuthStateChanged(auth, (u) => {
       setUser(u);
-      if (u) onClose(); //close on success
+      if (u) onClose();
     });
     return () => unsub();
   }, [onClose]);
@@ -38,6 +40,8 @@ export default function AuthModal({ isOpen, onClose }: Props) {
     setLoading(true);
     setError(null);
     try {
+      const auth = getFirebaseAuth();
+      if (!auth) throw new Error("Auth not available in this environment.");
       if (mode === "login") {
         await signInWithEmailAndPassword(auth, email, password);
       } else {
@@ -54,6 +58,8 @@ export default function AuthModal({ isOpen, onClose }: Props) {
     setLoading(true);
     setError(null);
     try {
+      const auth = getFirebaseAuth();
+      if (!auth) throw new Error("Auth not available in this environment.");
       const provider = new GoogleAuthProvider();
       await signInWithPopup(auth, provider);
     } catch (err: unknown) {
@@ -64,7 +70,10 @@ export default function AuthModal({ isOpen, onClose }: Props) {
   }
 
   async function handleSignOut() {
-    await signOut(auth);
+    const auth = getFirebaseAuth();
+    if (auth) {
+      await signOut(auth);
+    }
     onClose();
   }
 
