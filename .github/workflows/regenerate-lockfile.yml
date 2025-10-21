@@ -24,7 +24,9 @@ jobs:
           git status --porcelain || true
 
       - name: Install (generate lockfile on linux)
-        run: npm ci
+        run: |
+          npm install --package-lock-only --no-audit --no-fund
+
 
       - name: Show native artifacts (diagnostics)
         run: |
