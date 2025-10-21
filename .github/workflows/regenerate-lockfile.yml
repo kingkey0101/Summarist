@@ -31,6 +31,16 @@ jobs:
         run: |
           npm install --package-lock-only --no-audit --no-fund
 
+      - name: Install dependencies (for formatter / scripts)
+        run: |
+         # install node_modules now that package-lock.json exists
+         npm ci
+
+      - name: Format files
+        run: |
+         npm run format
+         git add -A || true
+
 
       - name: Show native artifacts (diagnostics)
         run: |
@@ -47,10 +57,11 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add package-lock.json || true
+          git add -A || true
           if git diff --staged --quiet; then
             echo "No changes to package-lock.json"
           else
             git commit -m "chore: regenerate package-lock.json on linux" || true
             git push origin HEAD:$(echo "${GITHUB_REF#refs/heads/}" || echo "main")
           fi
+         
