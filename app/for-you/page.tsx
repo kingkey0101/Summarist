@@ -3,7 +3,7 @@
 import type { User } from "firebase/auth";
 import { useEffect, useState } from "react";
 import { getFirebaseAuth } from "@/lib/firebaseClient";
-// import Search from "../components/Search";
+import Search from "../components/Search";
 import SideBar from "../components/SideBar";
 
 export default function ForYouPage() {
@@ -16,10 +16,15 @@ export default function ForYouPage() {
   }, []);
 
   return (
-    <main className="p-8 max-w-3xl md:ml-64">
-      <div className="flex justify-end">
-        <div className="w-full max-w-[1070px]">{/* <Search /> */}</div>
+    <main className="p-8 md:ml-64">
+      <div className="w-full flex justify-end">
+        <div className="w-full max-w-[1100px] pr-72">
+          <div className="flex justify-end">
+            <Search />
+          </div>
+        </div>
       </div>
+
       <div className="sidebar block">
         <SideBar />
       </div>
