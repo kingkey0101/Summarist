@@ -1,16 +1,13 @@
 "use client";
 
-import { type User } from "firebase/auth";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
+import type { User } from "firebase/auth";
 import { useEffect, useState } from "react";
 import { getFirebaseAuth } from "@/lib/firebaseClient";
 // import Search from "../components/Search";
 import SideBar from "../components/SideBar";
 
 export default function ForYouPage() {
-  const [user, setUser] = useState<User | null>(null);
-  const router = useRouter();
+  const [_user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
     const auth = getFirebaseAuth();
@@ -26,7 +23,6 @@ export default function ForYouPage() {
       <div className="sidebar block">
         <SideBar />
       </div>
-
     </main>
   );
 }

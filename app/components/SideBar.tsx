@@ -1,10 +1,10 @@
 "use client";
 
-import { getFirebaseAuth } from "@/lib/firebaseClient";
 import { signOut } from "firebase/auth";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
+import { getFirebaseAuth } from "@/lib/firebaseClient";
 
 const menuItems = [
   { name: "For you", href: "/for-you" },
@@ -89,6 +89,8 @@ function Icon({ name }: { name: string }) {
       return (
         <svg
           stroke="currentColor"
+          role="img"
+          aria-label="settings"
           fill="none"
           strokeWidth="0"
           viewBox="0 0 15 15"
@@ -109,6 +111,8 @@ function Icon({ name }: { name: string }) {
         <svg
           stroke="currentColor"
           fill="none"
+          role="img"
+          aria-label="help"
           strokeWidth="2"
           viewBox="0 0 24 24"
           strokeLinecap="round"
@@ -127,6 +131,8 @@ function Icon({ name }: { name: string }) {
         <svg
           stroke="currentColor"
           fill="none"
+          role="img"
+          aria-label="Logout"
           strokeWidth="2"
           viewBox="0 0 24 24"
           strokeLinecap="round"
