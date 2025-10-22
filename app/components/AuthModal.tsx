@@ -2,7 +2,6 @@
 import {
   createUserWithEmailAndPassword,
   GoogleAuthProvider,
-  onAuthStateChanged,
   sendPasswordResetEmail,
   signInAnonymously,
   signInWithEmailAndPassword,
@@ -10,7 +9,8 @@ import {
   signOut,
   type User,
 } from "firebase/auth";
-import { useEffect, useState } from "react";
+// import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { createPortal } from "react-dom";
 import { getFirebaseAuth } from "../../lib/firebaseClient";
 
@@ -20,22 +20,13 @@ type Props = {
 };
 
 export default function AuthModal({ isOpen, onClose }: Props) {
+  // const router = useRouter();
   const [mode, setMode] = useState<"login" | "signup">("login");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [user, setUser] = useState<User | null>(null);
-
-  useEffect(() => {
-    const auth = getFirebaseAuth();
-    if (!auth) return;
-    const unsub = onAuthStateChanged(auth, (u) => {
-      setUser(u);
-      if (u) onClose();
-    });
-    return () => unsub();
-  }, [onClose]);
+  const [user] = useState<User | null>(null);
 
   if (!isOpen) return null;
 
@@ -78,6 +69,8 @@ export default function AuthModal({ isOpen, onClose }: Props) {
     try {
       const auth = getFirebaseAuth();
       if (!auth) throw new Error("Auth not available in this environment.");
+      const cred = await signInAnonymously(auth);
+      console.log("signInAnonymously success:", cred?.user?.uid, cred?.user);
       await signInAnonymously(auth);
     } catch (err: unknown) {
       setError((err as Error)?.message ?? "Guest sign-in failed");

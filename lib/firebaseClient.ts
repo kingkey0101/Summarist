@@ -1,6 +1,12 @@
 import { type FirebaseApp, getApps, initializeApp } from "firebase/app";
-import { type Auth, getAuth } from "firebase/auth";
-import { type Firestore, getFirestore } from "firebase/firestore/lite";
+import { type Auth, getAuth, type User } from "firebase/auth";
+import {
+  doc,
+  type Firestore,
+  getFirestore,
+  serverTimestamp,
+  setDoc,
+} from "firebase/firestore/lite";
 
 let app: FirebaseApp | null = null;
 let authInstance: Auth | null = null;
@@ -47,4 +53,34 @@ export function getFirebaseDb(): Firestore | null {
   if (!a) return null;
   dbInstance = getFirestore(a);
   return dbInstance;
+}
+
+export async function upsertUser(user: User) {
+  const db = getFirebaseDb();
+  if (!db) return;
+  const ref = doc(db, "users", user.uid);
+  await setDoc(
+    ref,
+    {
+      uid: user.uid,
+      email: user.email ?? null,
+      displayName: user.displayName ?? null,
+      photoURL: user.photoURL ?? null,
+      lastSeen: serverTimestamp(),
+    },
+    { merge: true },
+  );
+}
+
+export async function createProfile(user: User) {
+  const db = getFirebaseDb();
+  if (!db) return;
+  const ref = doc(db, "profiles", user.uid);
+  await setDoc(ref, {
+    uid: user.uid,
+    email: user.email ?? null,
+    displayName: user.displayName ?? null,
+    photoURL: user.photoURL ?? null,
+    createdAt: serverTimestamp(),
+  });
 }

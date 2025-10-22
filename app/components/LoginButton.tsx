@@ -1,6 +1,7 @@
 "use client";
 
 import { onAuthStateChanged, type User } from "firebase/auth";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { getFirebaseAuth } from "@/lib/firebaseClient";
 
@@ -11,6 +12,7 @@ type Props = {
 
 export default function LoginButton({ className = "", children }: Props) {
   const [user, setUser] = useState<User | null>(null);
+  const router = useRouter();
 
   useEffect(() => {
     const auth = getFirebaseAuth();
@@ -25,11 +27,19 @@ export default function LoginButton({ className = "", children }: Props) {
     }
   }
 
+  function handleClick() {
+    if (user) {
+      router.push("/for-you");
+    } else {
+      openModal();
+    }
+  }
+
   const classes =
     `${className} inline-flex items-center gap-2 px-3 py-1`.trim();
   return (
-    <button type="button" onClick={openModal} className={classes}>
-      {user ? (user.email ?? "Account") : (children ?? "Login")}
+    <button type="button" onClick={handleClick} className={classes}>
+      {user ? "For you" : (children ?? "Login")}
     </button>
   );
 }

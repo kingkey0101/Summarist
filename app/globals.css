@@ -570,6 +570,14 @@ button:disabled {
   color: #dc2626;
 }
 
+.figure {
+  display: block;
+  margin-block-start: 1em;
+  margin-block-end: 1em;
+  margin-inline-start: 40px;
+  margin-inline-end: 40px;
+}
+
 @media (max-width: 768px) {
   .landing__content {
     display: flex;
