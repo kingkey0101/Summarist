@@ -3,10 +3,13 @@
 import { onAuthStateChanged, type User } from "firebase/auth";
 import { useEffect, useState } from "react";
 import { getFirebaseAuth } from "@/lib/firebaseClient";
-import AuthModal from "./AuthModal";
 
-export default function LoginButton() {
-  const [open, setOpen] = useState(false);
+type Props = {
+  className?: string;
+  children?: React.ReactNode;
+};
+
+export default function LoginButton({ className = "", children }: Props) {
   const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
@@ -16,12 +19,17 @@ export default function LoginButton() {
     return () => unsub();
   }, []);
 
+  function openModal() {
+    if (typeof window !== "undefined") {
+      window.dispatchEvent(new CustomEvent("open-auth-modal"));
+    }
+  }
+
+  const classes =
+    `${className} inline-flex items-center gap-2 px-3 py-1`.trim();
   return (
-    <>
-      <button type="button" onClick={() => setOpen(true)}>
-        {user ? (user.email ?? "Account") : "Login"}
-      </button>
-      <AuthModal isOpen={open} onClose={() => setOpen(false)} />
-    </>
+    <button type="button" onClick={openModal} className={classes}>
+      {user ? (user.email ?? "Account") : (children ?? "Login")}
+    </button>
   );
 }

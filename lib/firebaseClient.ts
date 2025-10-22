@@ -48,6 +48,3 @@ export function getFirebaseDb(): Firestore | null {
   dbInstance = getFirestore(a);
   return dbInstance;
 }
-// export const auth = getAuth();
-// export const db = getFirestore();
-// export default getApps()[0];

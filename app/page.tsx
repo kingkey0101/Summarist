@@ -1,9 +1,9 @@
 import Image from "next/image";
-import Link from "next/link";
 import { AiFillAudio, AiFillBulb, AiFillFileText } from "react-icons/ai";
 import { BiCrown } from "react-icons/bi";
 import { BsStarFill, BsStarHalf } from "react-icons/bs";
 import { RiLeafLine } from "react-icons/ri";
+import LoginButton from "./components/LoginButton";
 import Nav from "./components/Nav";
 import Stars from "./components/Stars";
 
@@ -32,27 +32,29 @@ export default function Home() {
             <div className="landing__wrapper">
               <div className="landing__content">
                 <div className="landing__content__title">
-                  Gain more knowledge <br className="remove--tablet" />
-                  in less time
+                  <h1>
+                    Gain more knowledge <br className="remove--tablet" />
+                    in less time
+                  </h1>
                 </div>
                 <div className="landing__content__subtitle">
-                  Great summaries for busy people,
-                  <br className="remove--tablet" />
-                  individuals who barely have time to read,
-                  <br className="remove--tablet" />
-                  and even people who don’t like to read.
+                  <h1 style={{ fontWeight: 300 }}>
+                    Great summaries for busy people,
+                    <br className="remove--tablet" />
+                    individuals who barely have time to read,
+                    <br className="remove--tablet" />
+                    and even people who don’t like to read.
+                  </h1>
                 </div>
-                <Link href="/login" className="btn home__cta--btn">
-                  Login
-                </Link>
+                <LoginButton className="btn home__cta--btn">Login</LoginButton>
               </div>
               <figure className="landing__image--mask relative w-full max-w-lg h-[360px] translate-x-24 md:translate-x-24 translate-y-[75px]">
                 <Image
                   src={"/assets/landing.png"}
                   alt="landing"
                   fill
+                  sizes="(max-width: 1024px) 112px, 288px"
                   style={{ objectFit: "contain" }}
-                  sizes="(max-width: 768px) 100vw, 400px"
                   priority
                 />
               </figure>
@@ -252,16 +254,12 @@ export default function Home() {
                 </div>
               </div>
             </div>
-
             <div className="reviews__btn--wrapper">
-              <Link href="/login" className="btn home__cta--btn">
-                Login
-              </Link>
+              <LoginButton className="btn home__cta--btn">Login</LoginButton>
             </div>
           </div>
         </div>
       </section>
-
       <section id="numbers">
         <div className="container">
           <div className="row">

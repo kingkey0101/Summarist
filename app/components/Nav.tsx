@@ -1,7 +1,6 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
 import LoginButton from "./LoginButton";
 
 export default function Nav() {
@@ -14,15 +13,16 @@ export default function Nav() {
             src={"/assets/logo.png"}
             alt="summarist logo"
             fill
+            sizes="(max-width: 768px) 112px, 288px"
             style={{ objectFit: "contain" }}
             priority
           />
         </figure>
         <ul className="nav__list--wrapper">
           <li className="nav__list nav__list--login">
-            <Link href={"/"} className="home__cta--btn">
+            <div className="home__cta--btn">
               <LoginButton />
-            </Link>
+            </div>
           </li>
           <li className="nav__list nav__list--mobile">About</li>
           <li className="nav__list nav__list--mobile">Contact</li>
