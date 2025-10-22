@@ -3,10 +3,10 @@ import { AiFillAudio, AiFillBulb, AiFillFileText } from "react-icons/ai";
 import { BiCrown } from "react-icons/bi";
 import { BsStarFill, BsStarHalf } from "react-icons/bs";
 import { RiLeafLine } from "react-icons/ri";
+import Stats from "./components/animation";
 import LoginButton from "./components/LoginButton";
 import Nav from "./components/Nav";
 import Stars from "./components/Stars";
-import Stats from "./components/animation";
 
 export const metadata = {
   title: "Home - Summarist",
