@@ -6,6 +6,7 @@ import { RiLeafLine } from "react-icons/ri";
 import LoginButton from "./components/LoginButton";
 import Nav from "./components/Nav";
 import Stars from "./components/Stars";
+import Stats from "./components/animation";
 
 export const metadata = {
   title: "Home - Summarist",
@@ -26,6 +27,7 @@ export default function Home() {
   return (
     <>
       <Nav />
+      <Stats />
       <section id="landing" className="flex items-center justify-center">
         <div className="container">
           <div className="row">
