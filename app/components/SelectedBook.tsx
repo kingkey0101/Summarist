@@ -12,8 +12,7 @@ type Book = {
 };
 
 export default function SelectedForYou({
-  apiUrl = process.env.NEXT_PUBLIC_SELECTED_API_URL ??
-    "/api/recommendation",
+  apiUrl = process.env.NEXT_PUBLIC_SELECTED_API_URL ?? "/api/recommendation",
 }: {
   apiUrl: string;
 }) {
