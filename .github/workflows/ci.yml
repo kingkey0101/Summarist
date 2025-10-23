@@ -32,6 +32,19 @@ jobs:
            echo "npm ci failed — falling back to npm install"
            npm install --no-audit --no-fund
           fi
+          
+      - name: Verify package-lock.json matches linux resolution
+        shell: bash
+        run: |
+          echo "Checking package-lock.json consistency (linux)"
+          # regenerate package-lock metadata as linux would resolve it
+          npm install --package-lock-only --no-audit --no-fund --ignore-scripts
+          if ! git diff --no-ext-diff --quiet -- package-lock.json; then
+            echo "package-lock.json changed after linux package-lock generation."
+            echo "Regenerate the lockfile on linux and commit it (use .github/workflows/regenerate-lockfile.yml)."
+            git --no-pager diff -- package-lock.json || true
+            exit 1
+          fi
 
       - name: Install Biome CLI (linux)
         run: npm install -g @biomejs/biome@latest

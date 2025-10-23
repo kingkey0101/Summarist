@@ -29,7 +29,7 @@ jobs:
 
       - name: Install (generate lockfile on linux)
         run: |
-          npm install --package-lock-only --no-audit --no-fund
+          npm install --package-lock-only --no-audit --no-fund --ignore-scripts
 
       - name: Install dependencies (for formatter / scripts)
         run: |
@@ -37,9 +37,21 @@ jobs:
           # keep dev deps for formatter, but skip optional native packages
           npm ci --omit=optional
 
-      - name: Format files
+      - name: Install Biome CLI (linux)
+        run: npm install -g @biomejs/biome@latest
+
+      - name: Format files (use global Biome)
         run: |
-         npm run format
+         npm install -g @biomejs/biome@latest
+         rm -f node_modules/.bin/biome || true
+         if command -v biome >/dev/null 2>&1; then
+         biome format --write
+         elif [ -x "/usr/local/bin/biome" ]; then
+         /usr/local/bin/biome format --write
+         else
+         echo "biome CLI not found on PATH; aborting" >&2
+         exit 1
+         fi
          git add -A || true
 
 

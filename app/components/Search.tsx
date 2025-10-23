@@ -6,14 +6,14 @@ export default function Search() {
   const [query, setQuery] = useState("");
 
   return (
-    <div className="w-[340px]">
+    <div className="w-full max-w-[340px]">
       <div className="relative">
         <input
           type="text"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Search for books"
-          className="h-10 w-[340px] px-4 pr-12 py-0 outline-none  border-gray-300 rounded-md  bg-[#f1f6f4] text-[#042330] border-2 border-[#e1e7ea]focus:outline-none"
+          className="h-10 w-full px-4 pr-12 py-0 outline-none  border-gray-300 rounded-md  bg-[#f1f6f4] text-[#042330] border-2 border-[#e1e7ea]focus:outline-none"
           aria-label="Search for books"
         />
 
