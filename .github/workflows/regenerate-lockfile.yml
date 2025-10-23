@@ -37,6 +37,9 @@ jobs:
           # keep dev deps for formatter, but skip optional native packages
           npm ci --omit=optional
 
+      - name: Install Biome CLI (linux)
+        run: npm install -g @biomejs/biome@latest
+
       - name: Format files
         run: |
          npm run format
