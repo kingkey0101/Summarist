@@ -4,6 +4,7 @@ import type { User } from "firebase/auth";
 import { useEffect, useState } from "react";
 import { getFirebaseAuth } from "@/lib/firebaseClient";
 import Search from "../components/Search";
+import SelectedForYou from "../components/SelectedBook";
 import SideBar from "../components/SideBar";
 
 export default function ForYouPage() {
@@ -17,11 +18,14 @@ export default function ForYouPage() {
 
   return (
     <main className="p-8 md:ml-64">
-      <div className="w-full flex justify-end">
-        <div className="w-full max-w-[1100px] pr-72">
-          <div className="flex justify-end">
-            <Search />
-          </div>
+      <div className="w-full flex justify-between gap-6">
+        <div className="flex-1 max-w-[681px]">
+          <SelectedForYou
+            apiUrl={process.env.NEXT_PUBLIC_RECOMMENDATION_API_URL ?? ""}
+          />
+        </div>
+        <div className=" w-[340px] flex justify-end">
+          <Search />
         </div>
       </div>
 
