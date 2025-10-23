@@ -18,17 +18,19 @@ export default function ForYouPage() {
 
   return (
     <main className="p-8 md:ml-64">
-      <div className="w-full flex justify-between gap-6">
-        <div className="flex-1 max-w-[681px]">
-          <SelectedForYou
-            apiUrl={process.env.NEXT_PUBLIC_RECOMMENDATION_API_URL ?? ""}
-          />
-        </div>
-        <div className=" w-[340px] flex justify-end">
+      <div className="w-full flex justify-center ml-[250px]">
+        <div className="w-[340px]">
           <Search />
         </div>
       </div>
-
+      <hr aria-hidden className="border-t border-gray-200 my-6" />
+      <div className="">
+        <div className="flex-1 max-w-[681px] ml-[220px] -mt-10">
+          <SelectedForYou
+            apiUrl={process.env.NEXT_PUBLIC_SELECTED_API_URL ?? ""}
+          />
+        </div>
+      </div>
       <div className="sidebar block">
         <SideBar />
       </div>
