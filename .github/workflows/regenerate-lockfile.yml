@@ -1,10 +1,12 @@
-
 permissions:
   contents: write
+  pull-requests: write
 
-name: Regenerate lockfile (linux)
+name: Regenerate lockfile (weekly)
 
 on:
+  schedule:
+    - cron: '0 3 * * 1' # weekly on Monday 10:00 PM
   workflow_dispatch:
 
 jobs:
@@ -29,6 +31,7 @@ jobs:
 
       - name: Install (generate lockfile on linux)
         run: |
+          # generate package-lock.json without running lifecycle scripts (avoid husky/other postinstall)
           npm install --package-lock-only --no-audit --no-fund --ignore-scripts
 
       - name: Install dependencies (for formatter / scripts)
@@ -37,23 +40,19 @@ jobs:
           # keep dev deps for formatter, but skip optional native packages
           npm ci --omit=optional
 
-      - name: Install Biome CLI (linux)
-        run: npm install -g @biomejs/biome@latest
-
-      - name: Format files (use global Biome)
+      - name: Install Biome linux runtime (for local Biome binary)
         run: |
-         npm install -g @biomejs/biome@latest
-         rm -f node_modules/.bin/biome || true
-         if command -v biome >/dev/null 2>&1; then
-         biome format --write
-         elif [ -x "/usr/local/bin/biome" ]; then
-         /usr/local/bin/biome format --write
-         else
-         echo "biome CLI not found on PATH; aborting" >&2
-         exit 1
-         fi
-         git add -A || true
+          # install the platform runtime so local `npm run format` can run successfully
+          npm install --no-save @biomejs/cli-linux-x64 || true
 
+      - name: Install Biome CLI (pinned)
+        run: npm install -g @biomejs/biome@2.3.0
+
+      - name: Format files (use local Biome)
+        run: |
+          # prefer the project biome (uses repo config & enables Tailwind directives)
+          npm run format
+          git add -A || true
 
       - name: Show native artifacts (diagnostics)
         run: |
@@ -64,17 +63,12 @@ jobs:
           echo "tailwind oxide dirs:"
           find node_modules -type d -name "*oxide*" -print | head -n 20 || true
 
-      - name: Commit package-lock.json
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -A || true
-          if git diff --staged --quiet; then
-            echo "No changes to package-lock.json"
-          else
-            git commit -m "chore: regenerate package-lock.json on linux [skip ci]" || true
-            git push origin HEAD:$(echo "${GITHUB_REF#refs/heads/}" || echo "main")
-          fi
-         
+      - name: Create pull request if lockfile changed
+        uses: peter-evans/create-pull-request@v5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: "chore: regenerate package-lock.json on linux [skip ci]"
+          title: "chore: regenerate package-lock.json on linux"
+          body: "Automated lockfile regeneration on linux (scheduled)"
+          branch: "regenerate-lockfile-weekly"
+          labels: "dependencies, automated"
