@@ -39,21 +39,16 @@ jobs:
           # keep dev deps for formatter, but skip optional native packages
           npm ci --omit=optional
 
-      - name: Install Biome CLI (linux)
-        run: npm install -g @biomejs/biome@latest
-
-      - name: Format files (use global Biome)
+      - name: Install Biome linux runtime (for local Biome binary)
         run: |
-          npm install -g @biomejs/biome@latest
-          rm -f node_modules/.bin/biome || true
-          if command -v biome >/dev/null 2>&1; then
-            biome format --write
-          elif [ -x "/usr/local/bin/biome" ]; then
-            /usr/local/bin/biome format --write
-          else
-            echo "biome CLI not found on PATH; aborting" >&2
-            exit 1
-          fi
+          # install the platform runtime so local `npm run format` can run successfully
+          npm install --no-save @biomejs/cli-linux-x64 || true
+
+      - name: Format files (use local Biome)
+        run: |
+          # prefer the project biome (uses repo config & enables Tailwind directives)
+          npm run format
+          git add -A || true
 
       - name: Show native artifacts (diagnostics)
         run: |
@@ -67,7 +62,7 @@ jobs:
       - name: Create pull request if lockfile changed
         uses: peter-evans/create-pull-request@v5
         with:
-          token: ${{secrets.GITHUB_TOKEN}}
+          token: ${{ secrets.GITHUB_TOKEN }}
           commit-message: "chore: regenerate package-lock.json on linux [skip ci]"
           title: "chore: regenerate package-lock.json on linux"
           body: "Automated lockfile regeneration on linux (scheduled)"
