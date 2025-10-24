@@ -67,7 +67,7 @@ jobs:
       - name: Create pull request if lockfile changed
         uses: peter-evans/create-pull-request@v5
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{secrets.GITHUB_TOKEN}}
           commit-message: "chore: regenerate package-lock.json on linux [skip ci]"
           title: "chore: regenerate package-lock.json on linux"
           body: "Automated lockfile regeneration on linux (scheduled)"
