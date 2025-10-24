@@ -47,7 +47,7 @@ jobs:
           fi
 
       - name: Install Biome CLI (linux)
-        run: npm install -g @biomejs/biome@latest
+        run: npm install -g @biomejs/biome@2.3.0
 
       - name: Ensure Biome linux runtime for local package
         run: |

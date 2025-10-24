@@ -44,6 +44,9 @@ jobs:
           # install the platform runtime so local `npm run format` can run successfully
           npm install --no-save @biomejs/cli-linux-x64 || true
 
+      - name: Install Biome CLI (pinned)
+        run: npm install -g @biomejs/biome@2.3.0
+
       - name: Format files (use local Biome)
         run: |
           # prefer the project biome (uses repo config & enables Tailwind directives)

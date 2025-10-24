@@ -15,7 +15,6 @@
     "prepare": "husky install"
   },
   "dependencies": {
-    "@biomejs/biome": "^2.2.6",
     "@reduxjs/toolkit": "^2.9.1",
     "firebase": "^12.4.0",
     "next": "15.5.6",
@@ -25,7 +24,8 @@
     "react-redux": "^9.2.0"
   },
   "devDependencies": {
-    "@biomejs/biome": "^2.2.6",
+    "@biomejs/biome": "^2.3.0",
+    "@biomejs/cli-win32-x64": "^2.3.0",
     "@tailwindcss/postcss": "^4",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.0",
