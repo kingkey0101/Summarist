@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 
 type Book = {
@@ -65,36 +66,38 @@ export default function RecoommendedBooks({
 
       <div className="flex gap-11 overflow-none py-8">
         {books.map((b) => (
-          <article
-            key={b.id}
-            className="p-3 w-[190px] shrink-0 max-w-[190px] max-h-[356px] hover:bg-gray-200 cursor-pointer"
-          >
-            <div className="flex items-end justify-end mt-2 pb-4">
-              {b.subscriptionRequired && (
-                <div className="text-xs bg-gray-800 px-2 py-0.5 rounded-3xl text-white">
-                  Premium
-                </div>
-              )}
-            </div>
-            <div className="relative w-full h-40 mb-3 lg:w-[172px] lg:h-[172px]">
-              <Image
-                src={b.imageLink ?? "no books loaded"}
-                alt="b.title"
-                fill
-                style={{ objectFit: "cover" }}
-                sizes="160px"
-                priority={false}
-              />
-            </div>
-            <div className="text-[16px] font-semibold ">{b.title}</div>
-            <div className="text-sm text-gray-500">{b.author}</div>
-            <div className="text-sm mt-1 text-black">{b.subTitle}</div>
-            <div className="flex items-center justify-between mt-2">
-              <div className="text-xs text-gray-600">
-                {b.averageRating ? `${b.averageRating.toFixed(1)} ★` : "-"}
+          <Link key={b.id} href={`/book/${b.id}`} className="no-underline">
+            <article
+              key={b.id}
+              className="p-3 w-[190px] shrink-0 max-w-[190px] max-h-[356px] hover:bg-gray-200 cursor-pointer"
+            >
+              <div className="flex items-end justify-end mt-2 pb-4">
+                {b.subscriptionRequired && (
+                  <div className="text-xs bg-gray-800 px-2 py-0.5 rounded-3xl text-white">
+                    Premium
+                  </div>
+                )}
               </div>
-            </div>
-          </article>
+              <div className="relative w-full h-40 mb-3 lg:w-[172px] lg:h-[172px]">
+                <Image
+                  src={b.imageLink ?? "no books loaded"}
+                  alt="b.title"
+                  fill
+                  style={{ objectFit: "cover" }}
+                  sizes="160px"
+                  priority={false}
+                />
+              </div>
+              <div className="text-[16px] font-semibold ">{b.title}</div>
+              <div className="text-sm text-gray-500">{b.author}</div>
+              <div className="text-sm mt-1 text-black">{b.subTitle}</div>
+              <div className="flex items-center justify-between mt-2">
+                <div className="text-xs text-gray-600">
+                  {b.averageRating ? `${b.averageRating.toFixed(1)} ★` : "-"}
+                </div>
+              </div>
+            </article>
+          </Link>
         ))}
       </div>
     </section>
