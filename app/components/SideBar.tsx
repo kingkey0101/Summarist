@@ -169,7 +169,7 @@ export default function SideBar() {
   }
 
   return (
-    <aside className="md:fixed md:left-0 md:top-0 md:h-screen md:w-52 w-full bg-gray-100 text-black flex flex-col items-start z-20">
+    <aside className="md:fixed md:left-0 md:top-0 md:h-screen md:w-52 w-full bg-[#f7faf9] text-black flex flex-col items-start z-20">
       <div className="flex justify-start items-start pb-10 pt-6 ml-4">
         <Image
           className="for-you-logo"
@@ -181,7 +181,6 @@ export default function SideBar() {
           sizes="(max-width: 768px) 240px, 495px"
           priority
         />
-        <div className="sidebar__link--line active--tab bg-green-500"></div>
       </div>
       <nav className="flex flex-col w-full flex-1 pb-10">
         {(() => {
@@ -193,7 +192,10 @@ export default function SideBar() {
             const isActive = pathname?.startsWith(item.href) ?? false;
             if (item.name === "Logout") {
               return (
-                <div key={item.name} className="flex items-center w-full">
+                <div
+                  key={item.name}
+                  className="flex items-center w-full text-[#032b41]"
+                >
                   <div
                     aria-hidden="true"
                     className={`w-1 rounded-r transition-colors duration-150 self-stretch ${
@@ -205,7 +207,7 @@ export default function SideBar() {
                     type="button"
                     onClick={handleLogout}
                   >
-                    <span className="text-black">
+                    <span className="text-[#032b41]">
                       <Icon name={item.name} />
                     </span>
                     <span>{item.name}</span>
@@ -232,7 +234,7 @@ export default function SideBar() {
                   <span className="text-black">
                     <Icon name={item.name} />
                   </span>
-                  <span>{item.name}</span>
+                  <span className="text-[#032b41]">{item.name}</span>
                 </Link>
               </div>
             );
