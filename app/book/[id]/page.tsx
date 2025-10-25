@@ -18,7 +18,7 @@ type BookDetail = {
 
 async function fetchBookById(
   apiBase: string | undefined,
-  id: string
+  id: string,
 ): Promise<BookDetail | null> {
   if (!apiBase) return null;
 
@@ -34,7 +34,7 @@ async function fetchBookById(
     const detailUrl = hasPlaceholder
       ? apiBase.replace(/\$\{id\}|\{id\}/g, encodeURIComponent(id))
       : `${apiBase}${apiBase.includes("?") ? "&" : "?"}id=${encodeURIComponent(
-          id
+          id,
         )}`;
 
     let res = await fetch(detailUrl, { cache: "no-store" });
@@ -43,24 +43,24 @@ async function fetchBookById(
       if (text?.trim()) {
         try {
           const json = JSON.parse(text);
-          return Array.isArray(json) ? json[0] ?? null : json;
+          return Array.isArray(json) ? (json[0] ?? null) : json;
         } catch (err) {
           console.warn(
             "detail endpoint returned invalid JSON: falling back to list",
-            err
+            err,
           );
         }
       } else {
         console.warn(
           "detail endpoint returned empty body, falling back to list",
-          detailUrl
+          detailUrl,
         );
       }
     } else {
       console.warn(
         "detail endpoint request failed, falling back to list",
         detailUrl,
-        res.status
+        res.status,
       );
     }
 
