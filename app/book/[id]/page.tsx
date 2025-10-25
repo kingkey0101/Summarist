@@ -18,7 +18,7 @@ type BookDetail = {
 
 async function fetchBookById(
   apiBase: string | undefined,
-  id: string
+  id: string,
 ): Promise<BookDetail | null> {
   if (!apiBase) return null;
 
@@ -34,33 +34,33 @@ async function fetchBookById(
     const detailUrl = hasPlaceholder
       ? apiBase.replace(/\$\{id\}|\{id\}/g, encodeURIComponent(id))
       : `${apiBase}${apiBase.includes("?") ? "&" : "?"}id=${encodeURIComponent(
-          id
+          id,
         )}`;
 
     let res = await fetch(detailUrl, { cache: "no-store" });
     if (res.ok) {
       const text = await res.text();
-      if (text && text.trim()) {
+      if (text?.trim()) {
         try {
           const json = JSON.parse(text);
-          return Array.isArray(json) ? json[0] ?? null : json;
+          return Array.isArray(json) ? (json[0] ?? null) : json;
         } catch (err) {
           console.warn(
             "detail endpoint returned invalid JSON, falling back to list",
-            err
+            err,
           );
         }
       } else {
         console.warn(
           "detail endpoint returned empty body, falling back to list",
-          detailUrl
+          detailUrl,
         );
       }
     } else {
       console.warn(
         "detail endpoint request failed, falling back to list",
         detailUrl,
-        res.status
+        res.status,
       );
     }
 
@@ -84,12 +84,18 @@ async function fetchBookById(
     }
 
     const list: BookDetail[] = Array.isArray(data)
-      ? data
-      : (data as any).items && Array.isArray((data as any).items)
-      ? (data as any).items
-      : [data as any];
+      ? (data as BookDetail[])
+      : (() => {
+          if (typeof data === "object" && data !== null) {
+            const maybeItems = (data as Record<string, unknown>).items;
+            if (Array.isArray(maybeItems)) {
+              return maybeItems as BookDetail[];
+            }
+          }
+          return [data as BookDetail];
+        })();
 
-    return list.find((b: any) => String(b.id) === String(id)) ?? null;
+    return list.find((b: BookDetail) => String(b.id) === String(id)) ?? null;
   } catch (err) {
     console.error("fetchBookById error:", err);
     return null;
