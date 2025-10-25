@@ -18,48 +18,78 @@ type BookDetail = {
 
 async function fetchBookById(
   apiBase: string | undefined,
-  id: string,
+  id: string
 ): Promise<BookDetail | null> {
   if (!apiBase) return null;
 
   try {
-    const decoded = decodeURIComponent(apiBase);
+    let decoded: string;
+    try {
+      decoded = decodeURIComponent(apiBase);
+    } catch {
+      decoded = apiBase;
+    }
+
     const hasPlaceholder = /\$\{id\}|\{id\}/.test(decoded);
     const detailUrl = hasPlaceholder
       ? apiBase.replace(/\$\{id\}|\{id\}/g, encodeURIComponent(id))
       : `${apiBase}${apiBase.includes("?") ? "&" : "?"}id=${encodeURIComponent(
-          id,
+          id
         )}`;
 
     let res = await fetch(detailUrl, { cache: "no-store" });
     if (res.ok) {
       const text = await res.text();
-      if (text?.trim()) {
+      if (text && text.trim()) {
         try {
           const json = JSON.parse(text);
-          return Array.isArray(json) ? (json[0] ?? null) : json;
+          return Array.isArray(json) ? json[0] ?? null : json;
         } catch (err) {
           console.warn(
-            "detail endpoint returned non-JSON, falling back to list",
-            err,
+            "detail endpoint returned invalid JSON, falling back to list",
+            err
           );
         }
       } else {
         console.warn(
           "detail endpoint returned empty body, falling back to list",
+          detailUrl
         );
       }
+    } else {
+      console.warn(
+        "detail endpoint request failed, falling back to list",
+        detailUrl,
+        res.status
+      );
     }
 
     res = await fetch(apiBase, { cache: "no-store" });
-    if (!res.ok) return null;
-    const data = await res.json();
+    if (!res.ok) {
+      console.warn("list endpoint request failed", apiBase, res.status);
+      return null;
+    }
+    const listText = await res.text();
+    if (!listText || !listText.trim()) {
+      console.warn("list endpoint returned empty body", apiBase);
+      return null;
+    }
+
+    let data: unknown;
+    try {
+      data = JSON.parse(listText);
+    } catch (err) {
+      console.warn("list endpoint returned invalid JSON", err);
+      return null;
+    }
+
     const list: BookDetail[] = Array.isArray(data)
       ? data
-      : Array.isArray(data.items)
-        ? data.items
-        : [data];
-    return list.find((b) => String(b.id) === String(id)) ?? null;
+      : (data as any).items && Array.isArray((data as any).items)
+      ? (data as any).items
+      : [data as any];
+
+    return list.find((b: any) => String(b.id) === String(id)) ?? null;
   } catch (err) {
     console.error("fetchBookById error:", err);
     return null;
@@ -67,8 +97,14 @@ async function fetchBookById(
 }
 
 export default async function Page(props: unknown): Promise<JSX.Element> {
-  const { params } = (props as { params?: { id: string } }) ?? {};
-  const { id } = params ?? { id: "" };
+  const paramsCandidate = (
+    props as {
+      params?: { id: string } | Promise<{ id: string }>;
+    }
+  )?.params;
+  const { id } = (paramsCandidate ? await paramsCandidate : { id: "" }) as {
+    id: string;
+  };
 
   const rawBookApi =
     process.env.NEXT_PUBLIC_BOOK_ID_API_URL ??
@@ -135,7 +171,7 @@ export default async function Page(props: unknown): Promise<JSX.Element> {
             )}
           </div>
 
-          <div className="w-[180px] flex-shrink-0 flex justify-center items-start">
+          <div className="w-[180px] shrink-0 flex justify-center items-start">
             <div className="relative w-[140px] h-[200px] rounded-sm overflow-hidden">
               <Image
                 src={book.imageLink ?? "/assets/window.svg"}
