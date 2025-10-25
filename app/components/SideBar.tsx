@@ -192,7 +192,10 @@ export default function SideBar() {
             const isActive = pathname?.startsWith(item.href) ?? false;
             if (item.name === "Logout") {
               return (
-                <div key={item.name} className="flex items-center w-full text-[#032b41]">
+                <div
+                  key={item.name}
+                  className="flex items-center w-full text-[#032b41]"
+                >
                   <div
                     aria-hidden="true"
                     className={`w-1 rounded-r transition-colors duration-150 self-stretch ${

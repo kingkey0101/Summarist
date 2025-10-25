@@ -34,8 +34,8 @@ export default function RecoommendedBooks({
         const list: Book[] = Array.isArray(data)
           ? data
           : Array.isArray(data.items)
-          ? data.items
-          : [data];
+            ? data.items
+            : [data];
         if (mounted) setBooks(list.slice(0, 5));
       } catch (err: unknown) {
         if (mounted) setError((err as Error)?.message ?? "Failed");
