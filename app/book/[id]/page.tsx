@@ -23,19 +23,28 @@ async function fetchBookById(
   if (!apiBase) return null;
 
   try {
-    let decoded: string;
+    let _decoded: string;
     try {
-      decoded = decodeURIComponent(apiBase);
+      _decoded = decodeURIComponent(apiBase);
     } catch {
-      decoded = apiBase;
+      _decoded = apiBase;
     }
 
-    const hasPlaceholder = /\$\{id\}|\{id\}/.test(decoded);
-    const detailUrl = hasPlaceholder
-      ? apiBase.replace(/\$\{id\}|\{id\}/g, encodeURIComponent(id))
-      : `${apiBase}${apiBase.includes("?") ? "&" : "?"}id=${encodeURIComponent(
-          id,
-        )}`;
+    let detailUrl = apiBase.replace(
+      /\$\{id\} | \{id\}/g,
+      encodeURIComponent(id),
+    );
+    if (detailUrl === apiBase) {
+      detailUrl = `${apiBase}${
+        apiBase.includes("?") ? "&" : "?"
+      }id=${encodeURIComponent(id)}`;
+    }
+    // const hasPlaceholder = /\$\{id\}|\{id\}/.test(decoded);
+    // const detailUrl = hasPlaceholder
+    //   ? apiBase.replace(/\$\{id\}|\{id\}/g, encodeURIComponent(id))
+    //   : `${apiBase}${apiBase.includes("?") ? "&" : "?"}id=${encodeURIComponent(
+    //       id
+    //     )}`;
 
     let res = await fetch(detailUrl, { cache: "no-store" });
     if (res.ok) {
@@ -112,10 +121,10 @@ export default async function Page(props: unknown): Promise<JSX.Element> {
     id: string;
   };
 
-  const rawBookApi =
-    process.env.NEXT_PUBLIC_BOOK_ID_API_URL ??
-    process.env.NEXT_PUBLIC_RECOMMENDATION_API_URL ??
-    process.env.NEXT_PUBLIC_SELECTED_API_URL;
+  const rawBookApi = process.env.NEXT_PUBLIC_BOOK_ID_API_URL;
+  // ??
+  // process.env.NEXT_PUBLIC_RECOMMENDATION_API_URL ??
+  // process.env.NEXT_PUBLIC_SELECTED_API_URL;
 
   const apiBase = rawBookApi ?? undefined;
   const book = await fetchBookById(apiBase, id);
