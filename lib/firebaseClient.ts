@@ -6,6 +6,7 @@ import {
   getFirestore,
   serverTimestamp,
   setDoc,
+  getDoc,
 } from "firebase/firestore/lite";
 
 let app: FirebaseApp | null = null;
@@ -83,4 +84,40 @@ export async function createProfile(user: User) {
     photoURL: user.photoURL ?? null,
     createdAt: serverTimestamp(),
   });
+}
+
+export async function getUserProfile(
+  uid: string,
+): Promise<Record<string, unknown> | null> {
+  const db = getFirebaseDb();
+  if (!db) return null;
+  try {
+    const ref = doc(db, "profiles", uid);
+    const snap = await getDoc(ref)
+    return snap.exists() ? (snap.data() as Record<string, unknown>) : null;
+  } catch (err) {
+    console.error("getUserProfile error:", err);
+    return null;
+  }
+}
+
+export async function addBookToLibrary(
+  user: User,
+  book: Record<string, unknown>,
+) {
+  const db = getFirebaseDb();
+  if (!db) return;
+  try {
+    const ref = doc(db, "users", user.uid, "library", String(book.id ?? Date.now()));
+    await setDoc(
+      ref,
+      {
+        ...book, addedAt: serverTimestamp(),
+      },
+      { merge: true },
+    );
+  } catch (err) {
+    console.error("addBookToLibrary error:", err);
+    throw err;
+  }
 }
