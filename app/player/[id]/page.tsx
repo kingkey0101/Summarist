@@ -1,9 +1,9 @@
-import { BookDetail } from "@/lib/BookDetail";
-import { JSX } from "react";
+import type { JSX } from "react";
+import type { BookDetail } from "@/lib/BookDetail";
 
 async function fetchBookById(
   apiBase: string | undefined,
-  id: string
+  id: string,
 ): Promise<BookDetail | null> {
   if (!apiBase) return null;
 
@@ -26,8 +26,8 @@ async function fetchBookById(
       if (text?.trim()) {
         try {
           const json = JSON.parse(text);
-          return Array.isArray(json) ? json[0] ?? null : (json as BookDetail);
-        } catch (err) {
+          return Array.isArray(json) ? (json[0] ?? null) : (json as BookDetail);
+        } catch (_err) {
           return null;
         }
       }
@@ -60,12 +60,13 @@ async function fetchBookById(
   }
 }
 
-export default async function PlayerPage({
-  params,
-}: {
-  params: { id: string };
-}): Promise<JSX.Element> {
-  const { id } = params;
+export default async function PlayerPage(props: unknown): Promise<JSX.Element> {
+  const paramsCandidate = (
+    props as { params?: { id: string } | Promise<{ id: string }> }
+  )?.params;
+  const { id } = (paramsCandidate ? await paramsCandidate : { id: "" }) as {
+    id: string;
+  };
   const apiBase = process.env.NEXT_PUBLIC_BOOK_ID_API_URL ?? undefined;
   const book = await fetchBookById(apiBase, id);
 
@@ -79,7 +80,6 @@ export default async function PlayerPage({
       </main>
     );
   }
-
   const summary = book.summary ?? "No summary available.";
 
   return (

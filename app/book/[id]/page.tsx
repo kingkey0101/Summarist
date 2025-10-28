@@ -1,13 +1,13 @@
 import Image from "next/image";
 import type { JSX } from "react";
+import BookActions from "@/app/components/BookActions";
 import Search from "@/app/components/Search";
 import SideBar from "@/app/components/SideBar";
 import type { BookDetail } from "@/lib/BookDetail";
-import BookActions from "@/app/components/BookActions";
 
 async function fetchBookById(
   apiBase: string | undefined,
-  id: string
+  id: string,
 ): Promise<BookDetail | null> {
   if (!apiBase) return null;
 
@@ -21,7 +21,7 @@ async function fetchBookById(
 
     let detailUrl = _decoded.replace(
       /\$\{id\}|\{id\}/g,
-      encodeURIComponent(id)
+      encodeURIComponent(id),
     );
     if (detailUrl === _decoded) {
       detailUrl = `${_decoded}${
@@ -34,24 +34,24 @@ async function fetchBookById(
       if (text?.trim()) {
         try {
           const json = JSON.parse(text);
-          return Array.isArray(json) ? json[0] ?? null : json;
+          return Array.isArray(json) ? (json[0] ?? null) : json;
         } catch (err) {
           console.warn(
             "detail endpoint returned invalid JSON: falling back to list",
-            err
+            err,
           );
         }
       } else {
         console.warn(
           "detail endpoint returned empty body, falling back to list",
-          detailUrl
+          detailUrl,
         );
       }
     } else {
       console.warn(
         "detail endpoint request failed, falling back to list",
         detailUrl,
-        res.status
+        res.status,
       );
     }
 
@@ -158,13 +158,13 @@ export default async function Page(props: unknown): Promise<JSX.Element> {
   const keyIdeas: string[] = Array.isArray(rawKeyIdeas)
     ? (rawKeyIdeas.map(normalizeIdea).filter(Boolean) as string[])
     : typeof rawKeyIdeas === "string"
-    ? rawKeyIdeas
-        .split(/\r?\n/)
-        .map((s) => s.trim())
-        .filter(Boolean)
-    : rawKeyIdeas
-    ? ([normalizeIdea(rawKeyIdeas)].filter(Boolean) as string[])
-    : [];
+      ? rawKeyIdeas
+          .split(/\r?\n/)
+          .map((s) => s.trim())
+          .filter(Boolean)
+      : rawKeyIdeas
+        ? ([normalizeIdea(rawKeyIdeas)].filter(Boolean) as string[])
+        : [];
 
   return (
     <main className="p-8 md:ml-64">

@@ -3,10 +3,10 @@ import { type Auth, getAuth, type User } from "firebase/auth";
 import {
   doc,
   type Firestore,
+  getDoc,
   getFirestore,
   serverTimestamp,
   setDoc,
-  getDoc,
 } from "firebase/firestore/lite";
 
 let app: FirebaseApp | null = null;
@@ -93,7 +93,7 @@ export async function getUserProfile(
   if (!db) return null;
   try {
     const ref = doc(db, "profiles", uid);
-    const snap = await getDoc(ref)
+    const snap = await getDoc(ref);
     return snap.exists() ? (snap.data() as Record<string, unknown>) : null;
   } catch (err) {
     console.error("getUserProfile error:", err);
@@ -108,11 +108,18 @@ export async function addBookToLibrary(
   const db = getFirebaseDb();
   if (!db) return;
   try {
-    const ref = doc(db, "users", user.uid, "library", String(book.id ?? Date.now()));
+    const ref = doc(
+      db,
+      "users",
+      user.uid,
+      "library",
+      String(book.id ?? Date.now()),
+    );
     await setDoc(
       ref,
       {
-        ...book, addedAt: serverTimestamp(),
+        ...book,
+        addedAt: serverTimestamp(),
       },
       { merge: true },
     );
