@@ -1,5 +1,7 @@
 import Image from "next/image";
 import type { JSX } from "react";
+import Search from "@/app/components/Search";
+import SideBar from "@/app/components/SideBar";
 
 type BookDetail = {
   id: string;
@@ -10,7 +12,7 @@ type BookDetail = {
   averageRating?: number;
   totalRating?: number;
   type?: string;
-  keyIdeas?: string[];
+  keyIdeas?: string | string[];
   tags?: string[];
   bookDescription?: string;
   authorDescription?: string;
@@ -30,22 +32,15 @@ async function fetchBookById(
       _decoded = apiBase;
     }
 
-    let detailUrl = apiBase.replace(
-      /\$\{id\} | \{id\}/g,
+    let detailUrl = _decoded.replace(
+      /\$\{id\}|\{id\}/g,
       encodeURIComponent(id),
     );
-    if (detailUrl === apiBase) {
-      detailUrl = `${apiBase}${
-        apiBase.includes("?") ? "&" : "?"
+    if (detailUrl === _decoded) {
+      detailUrl = `${_decoded}${
+        _decoded.includes("?") ? "&" : "?"
       }id=${encodeURIComponent(id)}`;
     }
-    // const hasPlaceholder = /\$\{id\}|\{id\}/.test(decoded);
-    // const detailUrl = hasPlaceholder
-    //   ? apiBase.replace(/\$\{id\}|\{id\}/g, encodeURIComponent(id))
-    //   : `${apiBase}${apiBase.includes("?") ? "&" : "?"}id=${encodeURIComponent(
-    //       id
-    //     )}`;
-
     let res = await fetch(detailUrl, { cache: "no-store" });
     if (res.ok) {
       const text = await res.text();
@@ -122,12 +117,45 @@ export default async function Page(props: unknown): Promise<JSX.Element> {
   };
 
   const rawBookApi = process.env.NEXT_PUBLIC_BOOK_ID_API_URL;
-  // ??
-  // process.env.NEXT_PUBLIC_RECOMMENDATION_API_URL ??
-  // process.env.NEXT_PUBLIC_SELECTED_API_URL;
 
   const apiBase = rawBookApi ?? undefined;
   const book = await fetchBookById(apiBase, id);
+
+  console.debug("fetched book payload:", JSON.stringify(book ?? {}, null, 2));
+  const rawKeyIdeas = (book as BookDetail)?.keyIdeas;
+  type RawIdeas = unknown;
+  const normalizeIdea = (it: RawIdeas): string | null => {
+    if (it === null) return null;
+    if (typeof it === "string") return it.trim() || null;
+    if (typeof it === "number" || typeof it === "boolean") return String(it);
+    if (typeof it === "object") {
+      if (Array.isArray(it)) return null;
+      const obj = it as Record<string, unknown>;
+      const candidateKeys = ["text", "value", "idea", "label", "description"];
+      for (const k of candidateKeys) {
+        const v = obj[k];
+        if (typeof v === "string" && v.trim()) return v.trim();
+      }
+      try {
+        const s = JSON.stringify(it);
+        return s === "{" ? null : s;
+      } catch {
+        return null;
+      }
+      //   if (typeof it.text === "string" && it.text.trim()) return it.text.trim();
+      //   if (it.value === "string" && it.value.trim()) return it.value.trim();
+      //   if (it.idea === "string" && it.idea.trim()) return it.idea.trim();
+      // }
+      // try {
+      //   const s = JSON.stringify(it);
+      //   return s === "{}" ? null : s;
+      // } catch {
+      //   return null;
+      // }
+      // return String(it);
+    }
+    return null;
+  };
 
   if (!book) {
     return (
@@ -140,60 +168,167 @@ export default async function Page(props: unknown): Promise<JSX.Element> {
     );
   }
 
-  const keyIdeas = book.keyIdeas ?? [];
+  const keyIdeas: string[] = Array.isArray(rawKeyIdeas)
+    ? (rawKeyIdeas.map(normalizeIdea).filter(Boolean) as string[])
+    : typeof rawKeyIdeas === "string"
+      ? rawKeyIdeas
+          .split(/\r?\n/)
+          .map((s) => s.trim())
+          .filter(Boolean)
+      : rawKeyIdeas
+        ? ([normalizeIdea(rawKeyIdeas)].filter(Boolean) as string[])
+        : [];
 
   return (
     <main className="p-8 md:ml-64">
+      <div className="w-full flex justify-center ml-[250px]">
+        <div className="sticky top-8 space-y-4 ">
+          <Search />
+        </div>
+      </div>
+      <hr aria-hidden className="border-t border-gray-200 my-6" />
+      <SideBar />
       <div className="max-w-5xl mx-auto">
         <div className="bg-white rounded-md p-6 flex gap-6 items-start">
-          <div className="flex-1">
-            <h1 className="text-2xl font-bold text-[#032b41]">{book.title}</h1>
+          <div className="flex-1 relative">
+            <h1 className="text-[32px] font-bold text-[#032b41]">
+              {book.title}
+            </h1>
+            <div className="mt-2">
+              <strong>{book.author ?? "Unknown"}</strong>
+            </div>
             {book.subTitle && (
-              <div className="text-sm text-gray-600 mt-1">{book.subTitle}</div>
-            )}
-
-            <div className="mt-3 text-sm text-gray-700 space-y-1">
-              <div>
-                <strong>Author:</strong> {book.author ?? "Unknown"}
+              <div className="text-[20px] text-gray-500 mt-2 pb-3">
+                {book.subTitle}
+                <hr aria-hidden className="border-t border-gray-200 my-6" />
               </div>
-              {typeof book.averageRating !== "undefined" && (
-                <div>
-                  <strong>Average rating:</strong>{" "}
-                  {book.averageRating.toFixed(1)}
+            )}
+            {/* left */}
+            <div className="flex items-start justify-between gap-12">
+              <div className="flex flex-col gap-2">
+                <div className="flex items-center gap-3">
+                  {typeof book.averageRating !== "undefined" && (
+                    <div className="flex items-center gap-2">
+                      <svg
+                        role="img"
+                        aria-label="rating"
+                        className="w-6 h-6 shrink-0"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="currentColor"
+                        viewBox="0 0 1024 1024"
+                      >
+                        <path d="M908.1 353.1l-253.9-36.9L540.7 86.1c-3.1-6.3-8.2-11.4-14.5-14.5-15.8-7.8-35-1.3-42.9 14.5L369.8 316.2l-253.9 36.9c-7 1-13.4 4.3-18.3 9.3a32.05 32.05 0 0 0 .6 45.3l183.7 179.1-43.4 252.9a31.95 31.95 0 0 0 46.4 33.7L512 754l227.1 119.4c6.2 3.3 13.4 4.4 20.3 3.2 17.4-3 29.1-19.5 26.1-36.9l-43.4-252.9 183.7-179.1c5-4.9 8.3-11.3 9.3-18.3 2.7-17.5-9.5-33.7-27-36.3zM664.8 561.6l36.1 210.3L512 672.7 323.1 772l36.1-210.3-152.8-149L417.6 382 512 190.7 606.4 382l211.2 30.7-152.8 148.9z"></path>
+                      </svg>
+
+                      {book.averageRating.toFixed(1)}
+                      {typeof book.totalRating !== "undefined" && (
+                        <div>({book.totalRating})</div>
+                      )}
+                    </div>
+                  )}
+                  {keyIdeas.length > 0 && (
+                    <div className="flex items-center gap-2 ml-[50px]">
+                      <svg
+                        role="img"
+                        aria-label="ideas"
+                        className="w-6 h-6 shrink-0"
+                        xmlns="http://www.w3.org/2000/svg"
+                        stroke="currentColor"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"
+                        ></path>
+                      </svg>
+                      {keyIdeas.map((k, i) => (
+                        <div
+                          className="inline-block"
+                          key={`${i}-${String(k).slice(0, 40)}`}
+                        >
+                          {k}
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
-              )}
-              {typeof book.totalRating !== "undefined" && (
-                <div>
-                  <strong>Total ratings:</strong> {book.totalRating}
-                </div>
-              )}
+              </div>
+            </div>
+            {/* right */}
+            <div className="absolute items-center gap-2 pt-2">
               {book.type && (
-                <div>
-                  <strong>Type:</strong> {book.type}
+                <div className="flex items-center ">
+                  <svg
+                    role="img"
+                    aria-label="rating"
+                    className="w-6 h-6 shrink-0"
+                    xmlns="http://www.w3.org/2000/svg"
+                    stroke="currentColor"
+                    fill="currentColor"
+                    viewBox="0 0 1024 1024"
+                  >
+                    <path d="M842 454c0-4.4-3.6-8-8-8h-60c-4.4 0-8 3.6-8 8 0 140.3-113.7 254-254 254S258 594.3 258 454c0-4.4-3.6-8-8-8h-60c-4.4 0-8 3.6-8 8 0 168.7 126.6 307.9 290 327.6V884H326.7c-13.7 0-24.7 14.3-24.7 32v36c0 4.4 2.8 8 6.2 8h407.6c3.4 0 6.2-3.6 6.2-8v-36c0-17.7-11-32-24.7-32H548V782.1c165.3-18 294-158 294-328.1zM512 624c93.9 0 170-75.2 170-168V232c0-92.8-76.1-168-170-168s-170 75.2-170 168v224c0 92.8 76.1 168 170 168zm-94-392c0-50.6 41.9-92 94-92s94 41.4 94 92v224c0 50.6-41.9 92-94 92s-94-41.4-94-92V232z"></path>
+                  </svg>
+                  {book.type}
                 </div>
               )}
             </div>
-
-            {keyIdeas.length > 0 && (
-              <div className="mt-4">
-                <div className="font-semibold mb-2">Key ideas</div>
-                <ul className="list-disc list-inside text-sm text-gray-700 space-y-1">
-                  {keyIdeas.map((k, i) => (
-                    <li key={`${i}-${String(k).slice(0, 40)}`}>{k}</li>
-                  ))}
-                </ul>
-              </div>
-            )}
+            <div className="pt-4">
+              <hr aria-hidden className="border-t border-gray-200 my-6" />
+            </div>
+            {/* buttons */}
+            <div className="flex gap-4 mb-6">
+              <button
+                type="button"
+                className="bg-[#032b41] hover:bg-[#15425a] rounded-sm text-[16px] text-white flex items-center justify-center w-36 h-12 gap-2"
+              >
+                <div className="flex">
+                  <svg
+                    aria-hidden="true"
+                    className="w-6 h-6"
+                    stroke="currentColor"
+                    fill="currentColor"
+                    strokeWidth="0"
+                    viewBox="0 0 1024 1024"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path d="M928 161H699.2c-49.1 0-97.1 14.1-138.4 40.7L512 233l-48.8-31.3A255.2 255.2 0 0 0 324.8 161H96c-17.7 0-32 14.3-32 32v568c0 17.7 14.3 32 32 32h228.8c49.1 0 97.1 14.1 138.4 40.7l44.4 28.6c1.3.8 2.8 1.3 4.3 1.3s3-.4 4.3-1.3l44.4-28.6C602 807.1 650.1 793 699.2 793H928c17.7 0 32-14.3 32-32V193c0-17.7-14.3-32-32-32zM324.8 721H136V233h188.8c35.4 0 69.8 10.1 99.5 29.2l48.8 31.3 6.9 4.5v462c-47.6-25.6-100.8-39-155.2-39zm563.2 0H699.2c-54.4 0-107.6 13.4-155.2 39V298l6.9-4.5 48.8-31.3c29.7-19.1 64.1-29.2 99.5-29.2H888v488zM396.9 361H211.1c-3.9 0-7.1 3.4-7.1 7.5v45c0 4.1 3.2 7.5 7.1 7.5h185.7c3.9 0 7.1-3.4 7.1-7.5v-45c.1-4.1-3.1-7.5-7-7.5zm223.1 7.5v45c0 4.1 3.2 7.5 7.1 7.5h185.7c3.9 0 7.1-3.4 7.1-7.5v-45c0-4.1-3.2-7.5-7.1-7.5H627.1c-3.9 0-7.1 3.4-7.1 7.5zM396.9 501H211.1c-3.9 0-7.1 3.4-7.1 7.5v45c0 4.1 3.2 7.5 7.1 7.5h185.7c3.9 0 7.1-3.4 7.1-7.5v-45c.1-4.1-3.1-7.5-7-7.5zm416 0H627.1c-3.9 0-7.1 3.4-7.1 7.5v45c0 4.1 3.2 7.5 7.1 7.5h185.7c3.9 0 7.1-3.4 7.1-7.5v-45c.1-4.1-3.1-7.5-7-7.5z"></path>
+                  </svg>
+                </div>
+                Read
+              </button>
+              <button
+                type="button"
+                className="bg-[#032b41] hover:bg-[#15425a] rounded-sm text-[16px] text-white flex items-center justify-center w-36 h-12 gap-2"
+              >
+                <div className="flex">
+                  <svg
+                    className="w-6 h-6"
+                    stroke="currentColor"
+                    fill="currentColor"
+                    strokeWidth="0"
+                    viewBox="0 0 1024 1024"
+                    xmlns="http://www.w3.org/2000/svg"
+                    aria-hidden="true"
+                  >
+                    <path d="M928 161H699.2c-49.1 0-97.1 14.1-138.4 40.7L512 233l-48.8-31.3A255.2 255.2 0 0 0 324.8 161H96c-17.7 0-32 14.3-32 32v568c0 17.7 14.3 32 32 32h228.8c49.1 0 97.1 14.1 138.4 40.7l44.4 28.6c1.3.8 2.8 1.3 4.3 1.3s3-.4 4.3-1.3l44.4-28.6C602 807.1 650.1 793 699.2 793H928c17.7 0 32-14.3 32-32V193c0-17.7-14.3-32-32-32zM324.8 721H136V233h188.8c35.4 0 69.8 10.1 99.5 29.2l48.8 31.3 6.9 4.5v462c-47.6-25.6-100.8-39-155.2-39zm563.2 0H699.2c-54.4 0-107.6 13.4-155.2 39V298l6.9-4.5 48.8-31.3c29.7-19.1 64.1-29.2 99.5-29.2H888v488zM396.9 361H211.1c-3.9 0-7.1 3.4-7.1 7.5v45c0 4.1 3.2 7.5 7.1 7.5h185.7c3.9 0 7.1-3.4 7.1-7.5v-45c.1-4.1-3.1-7.5-7-7.5zm223.1 7.5v45c0 4.1 3.2 7.5 7.1 7.5h185.7c3.9 0 7.1-3.4 7.1-7.5v-45c0-4.1-3.2-7.5-7.1-7.5H627.1c-3.9 0-7.1 3.4-7.1 7.5zM396.9 501H211.1c-3.9 0-7.1 3.4-7.1 7.5v45c0 4.1 3.2 7.5 7.1 7.5h185.7c3.9 0 7.1-3.4 7.1-7.5v-45c.1-4.1-3.1-7.5-7-7.5zm416 0H627.1c-3.9 0-7.1 3.4-7.1 7.5v45c0 4.1 3.2 7.5 7.1 7.5h185.7c3.9 0 7.1-3.4 7.1-7.5v-45c.1-4.1-3.1-7.5-7-7.5z"></path>
+                  </svg>
+                </div>
+                Listen
+              </button>
+            </div>
           </div>
 
-          <div className="w-[180px] shrink-0 flex justify-center items-start">
-            <div className="relative w-[140px] h-[200px] rounded-sm overflow-hidden">
+          <div className="shrink-0 flex justify-center items-start">
+            <div className="relative w-[300px] h-[300px]">
               <Image
                 src={book.imageLink ?? "/assets/window.svg"}
                 alt={book.title}
                 fill
                 style={{ objectFit: "cover" }}
-                sizes="180px"
                 priority
               />
             </div>
@@ -201,22 +336,21 @@ export default async function Page(props: unknown): Promise<JSX.Element> {
         </div>
 
         <div className="mt-6 bg-white rounded-md p-6 text-center">
-          {book.tags && book.tags.length > 0 && (
-            <div className="mb-4 flex flex-wrap gap-2 justify-center">
-              {book.tags.map((t) => (
-                <span
-                  key={t}
-                  className="text-xs px-3 py-1 rounded-full bg-gray-100 text-gray-700"
-                >
-                  {t}
-                </span>
-              ))}
-            </div>
-          )}
-
           {book.bookDescription && (
             <div className="prose max-w-none mx-auto text-left">
               <h3 className="text-lg font-semibold mb-2">About the book</h3>
+              {book.tags && book.tags.length > 0 && (
+                <div className="mb-4 flex flex-wrap gap-2 justify-start">
+                  {book.tags.map((t) => (
+                    <span
+                      key={t}
+                      className="text-[15px] px-3 py-1 rounded-sm bg-[#f1f6f4] text-[#032b41] w-[205px] h-12 flex items-center font-semibold"
+                    >
+                      {t}
+                    </span>
+                  ))}
+                </div>
+              )}
               <p className="text-gray-700">{book.bookDescription}</p>
             </div>
           )}

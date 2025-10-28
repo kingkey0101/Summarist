@@ -26,7 +26,7 @@ export default function ForYouPage() {
         </div>
       </div>
       <hr aria-hidden className="border-t border-gray-200 my-6" />
-      <div className="">
+      <div>
         <div className="flex-1 max-w-[681px] ml-[220px] -mt-10">
           <SelectedForYou
             apiUrl={process.env.NEXT_PUBLIC_SELECTED_API_URL ?? ""}
