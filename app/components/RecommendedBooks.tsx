@@ -22,6 +22,7 @@ export default function RecoommendedBooks({
   const [books, setBooks] = useState<Book[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [navigatingId, setNavigatingId] = useState<string | null>(null);
 
   useEffect(() => {
     let mounted = true;
@@ -66,7 +67,12 @@ export default function RecoommendedBooks({
 
       <div className="flex gap-11 overflow-none py-8">
         {books.map((b) => (
-          <Link key={b.id} href={`/book/${b.id}`} className="no-underline">
+          <Link
+            key={b.id}
+            href={`/book/${b.id}`}
+            className="no-underline"
+            onClick={() => setNavigatingId(b.id)}
+          >
             <article
               key={b.id}
               className="p-3 w-[190px] shrink-0 max-w-[190px] max-h-[356px] hover:bg-gray-200 cursor-pointer"
@@ -78,6 +84,9 @@ export default function RecoommendedBooks({
                   </div>
                 )}
               </div>
+              {navigatingId === b.id && (
+                <div className="text-xs text-gray-600 mt-2">Loading...</div>
+              )}
               <div className="relative w-full h-40 mb-3 lg:w-[172px] lg:h-[172px]">
                 <Image
                   src={b.imageLink ?? "no books loaded"}
