@@ -46,14 +46,6 @@ jobs:
             exit 1
           fi
 
-      - name: Install Biome CLI (linux)
-        run: npm install -g @biomejs/biome@2.3.0
-
-      - name: Ensure Biome linux runtime for local package
-        run: |
-          # Install the linux runtime without modifying package.json
-          npm install --no-save @biomejs/cli-linux-x64@2.3.0
-
       - name: Ensure lightningcss native pkg (rebuild/install)
         run: |
           # Try to rebuild native modules from source for linux first
@@ -85,14 +77,18 @@ jobs:
           
       - name: Install Biome CLI for linting
         run: |
-          # Install the linux runtime for biome without saving to package.json
-          npm install --no-save @biomejs/cli-linux-x64@2.3.0 || npm install -g @biomejs/biome@2.3.0
+          # Install biome globally to ensure Linux binary is available
+          npm install -g @biomejs/biome@2.3.0
 
       - name: Run Biome lint
-        run: npm run lint
+        run: |
+          # Try local biome first, fallback to global if needed
+          npm run lint || biome check .
 
       - name: Run Biome format (apply)
-        run: npm run format
+        run: |
+          # Try local biome first, fallback to global if needed
+          npm run format || biome format --write .
 
       - name: Verify no formatting changes
         run: |
@@ -119,9 +115,6 @@ jobs:
            echo "npm ci failed — falling back to npm install"
            npm install --no-audit --no-fund
           fi
-
-      - name: Run lint
-        run: npm run lint
 
       - name: Type check
         run: npm run type-check --if-present
