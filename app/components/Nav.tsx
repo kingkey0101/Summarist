@@ -120,9 +120,9 @@ export default function Nav() {
         </div>
 
         <div className="flex items-center gap-4">
-          {/* Search bar positioned on the right */}
+          {/* Search bar positioned on the right - visible on all screen sizes */}
           {!hideSearch && (
-            <div className="hidden md:block">
+            <div className="flex-1 max-w-xs">
               <Search />
             </div>
           )}
