@@ -7,7 +7,7 @@ if (!stripeSecret) {
   console.warn("STRIPE_SECRET_KEY is not set");
 }
 const stripe = new Stripe(stripeSecret ?? "", {
-  apiVersion: "2025-12-15.clover",
+  apiVersion: "2025-11-17.clover",
 });
 
 // initialize Firebase Admin (support SERVICE_ACCOUNT JSON in env or ADC)
@@ -39,14 +39,14 @@ export async function POST(req: Request) {
     if (!planId || !priceCents || !interval) {
       return NextResponse.json(
         { error: "Missing planId, priceCents or interval" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
     if (!idToken) {
       return NextResponse.json(
         { error: "Authentication required" },
-        { status: 401 }
+        { status: 401 },
       );
     }
 
@@ -57,7 +57,7 @@ export async function POST(req: Request) {
       if (!decoded?.uid) {
         return NextResponse.json(
           { error: "Invalid auth token" },
-          { status: 401 }
+          { status: 401 },
         );
       }
       const uid = decoded.uid;
@@ -93,14 +93,14 @@ export async function POST(req: Request) {
       console.error("Auth verification failed:", err);
       return NextResponse.json(
         { error: "Invalid auth token" },
-        { status: 401 }
+        { status: 401 },
       );
     }
   } catch (err) {
     console.error("create-checkout error:", err);
     return NextResponse.json(
       { error: (err as Error)?.message ?? "unknown" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
