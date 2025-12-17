@@ -74,7 +74,9 @@ export default function ChoosePlanPage() {
 
     setLoading(true);
     try {
+      console.log("Getting ID token for user:", currentUser.uid);
       const idToken = await currentUser.getIdToken();
+      console.log("ID token obtained, length:", idToken.length);
 
       const res = await fetch("/api/createcheckout", {
         method: "POST",
@@ -89,12 +91,15 @@ export default function ChoosePlanPage() {
       });
 
       const json = await res.json();
+      console.log("API response:", { status: res.status, json });
+
       if (res.ok && json?.url) {
         window.location.href = json.url;
       } else {
         throw new Error(json?.error ?? "Failed to create checkout session");
       }
     } catch (err: unknown) {
+      console.error("Checkout error:", err);
       setError((err as Error)?.message ?? "Failed to create checkout");
     } finally {
       setLoading(false);
@@ -106,7 +111,7 @@ export default function ChoosePlanPage() {
   }
 
   return (
-    <main className="p-0">
+    <main className="p-0 md:pl-52">
       {/* HERO — full width dark band with centered content */}
       <section className="w-full bg-[#052e3b] relative">
         <div className="max-w-6xl mx-auto px-6">

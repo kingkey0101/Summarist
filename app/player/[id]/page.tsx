@@ -91,7 +91,7 @@ export default async function PlayerPage(props: unknown): Promise<JSX.Element> {
     <>
       <Nav />
 
-      <main className="p-8 md:ml-64 pb-32">
+      <main className="p-8 md:pl-56 pb-32">
         <div className="max-w-3xl mx-auto">
           <div className="bg-white rounded-md p-6">
             <h1 className="text-2xl font-black text-[#032b41]">{book.title}</h1>

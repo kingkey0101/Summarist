@@ -50,22 +50,32 @@ export async function POST(req: Request) {
     }
 
     if (!idToken) {
+      console.log("createcheckout: No idToken provided");
       return NextResponse.json(
         { error: "Authentication required" },
         { status: 401 },
       );
     }
 
+    console.log(
+      "createcheckout: Received request with idToken length:",
+      idToken.length,
+    );
+
     // verify ID token and obtain uid
     try {
       const firebaseApp = initFirebaseAdmin();
       if (!firebaseApp) {
+        console.log("createcheckout: Firebase app not available");
         return NextResponse.json(
           { error: "Firebase not available" },
           { status: 503 },
         );
       }
+
+      console.log("createcheckout: Verifying idToken...");
       const decoded = await admin.auth(firebaseApp).verifyIdToken(idToken);
+      console.log("createcheckout: Token verified for uid:", decoded?.uid);
       if (!decoded?.uid) {
         return NextResponse.json(
           { error: "Invalid auth token" },

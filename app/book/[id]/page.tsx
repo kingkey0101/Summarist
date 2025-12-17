@@ -2,7 +2,6 @@ import Image from "next/image";
 import type { JSX } from "react";
 import BookActions from "@/app/components/BookActions";
 import Nav from "@/app/components/Nav";
-import Search from "@/app/components/Search";
 import type { BookDetail } from "@/lib/BookDetail";
 
 async function fetchBookById(
@@ -158,12 +157,7 @@ export default async function Page(props: unknown): Promise<JSX.Element> {
   return (
     <>
       <Nav />
-      <main className="min-h-screen bg-gray-50 p-4 md:p-8">
-        <div className="w-full flex justify-center mb-4 md:mb-6">
-          <div className="sticky top-8 space-y-4 w-full max-w-lg">
-            <Search />
-          </div>
-        </div>
+      <main className="min-h-screen bg-gray-50 p-4 md:p-8 md:pl-56">
         <div className="max-w-6xl mx-auto">
           <div className="bg-white rounded-lg p-4 md:p-6 lg:p-8 flex flex-col md:flex-row gap-4 md:gap-6 lg:gap-8 items-start">
             <div className="flex-1 relative">
