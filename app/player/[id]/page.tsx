@@ -1,4 +1,6 @@
 import type { JSX } from "react";
+import AudioPlayer from "@/app/components/AudioPlayer";
+import Nav from "@/app/components/Nav";
 import type { BookDetail } from "@/lib/BookDetail";
 
 async function fetchBookById(
@@ -28,7 +30,7 @@ async function fetchBookById(
           const json = JSON.parse(text);
           return Array.isArray(json) ? (json[0] ?? null) : (json as BookDetail);
         } catch (_err) {
-          return null;
+          // ignore parse error and fallthrough to list fetch
         }
       }
     }
@@ -72,38 +74,57 @@ export default async function PlayerPage(props: unknown): Promise<JSX.Element> {
 
   if (!book) {
     return (
-      <main className="p-8 md:ml-64">
+      <main className="p-8 md:pl-52 pb-32">
         <div className="max-w-3xl mx-auto text-center py-20">
           <h1 className="text-2xl font-semibold">Book not found</h1>
           <p className="mt-3 text-gray-600">No data for id: {id}</p>
         </div>
+
+        <div className="sidebar block">{/* <SideBar /> */}</div>
       </main>
     );
   }
+
   const summary = book.summary ?? "No summary available.";
 
   return (
-    <main className="p-8 md:ml-64">
-      <div className="max-w-3xl mx-auto">
-        <div className="bg-white rounded-md p-6">
-          <h1 className="text-2xl font-black text-[#032b41]">{book.title}</h1>
-          {book.author && (
-            <div className="mt-2 text-sm text-gray-600">{book.author}</div>
-          )}
+    <>
+      <Nav />
 
-          <hr className="border-t border-gray-200 my-6" />
+      <main className="p-8 md:ml-64 pb-32">
+        <div className="max-w-3xl mx-auto">
+          <div className="bg-white rounded-md p-6">
+            <h1 className="text-2xl font-black text-[#032b41]">{book.title}</h1>
+            {book.author && (
+              <div className="mt-2 text-sm text-gray-600">{book.author}</div>
+            )}
 
-          <section className="prose max-w-none text-left">
-            <h2 className="text-lg font-semibold mb-2">Summary</h2>
-            <p className="text-gray-700 whitespace-pre-wrap">{summary}</p>
-          </section>
-          <div className="mt-6">
-            <p className="text-sm text-gray-500">
-              Player UI and Audio controls will be implemented later.
-            </p>
+            <hr className="border-t border-gray-200 my-6" />
+
+            <section className="prose max-w-none text-left">
+              <h2 className="text-lg font-semibold mb-2">Summary</h2>
+              <p className="text-gray-700 whitespace-pre-wrap">{summary}</p>
+            </section>
           </div>
         </div>
-      </div>
-    </main>
+      </main>
+
+      <div className="sidebar block">{/* <SideBar /> */}</div>
+
+      {book.audioLink && (
+        <div className="fixed bottom-0 left-0 right-0 md:left-52 z-50 pointer-events-auto">
+          <div className="max-w-7xl mx-auto px-4">
+            <div className="pb-2">
+              <AudioPlayer
+                src={book.audioLink}
+                title={book.title}
+                author={book.author ?? ""}
+                imageSrc={book.imageLink ?? null}
+              />
+            </div>
+          </div>
+        </div>
+      )}
+    </>
   );
 }

@@ -1,7 +1,6 @@
+import { redirect } from "next/navigation";
+
 export default function Player() {
-  return (
-    <div>
-      <h1>Player page</h1>
-    </div>
-  );
+  // Redirect to the main app since player requires an ID
+  redirect("/");
 }

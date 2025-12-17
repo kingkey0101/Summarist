@@ -128,3 +128,16 @@ export async function addBookToLibrary(
     throw err;
   }
 }
+
+// dev debug helpers (safe to remove after debugging)
+if (typeof window !== "undefined") {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  // biome-ignore lint/suspicious/noExplicitAny: Required for extending global window object
+  (window as any).getFirebaseApp = getFirebaseApp;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  // biome-ignore lint/suspicious/noExplicitAny: Required for extending global window object
+  (window as any).getFirebaseAuth = getFirebaseAuth;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  // biome-ignore lint/suspicious/noExplicitAny: Required for extending global window object
+  (window as any).getFirebaseDb = getFirebaseDb;
+}

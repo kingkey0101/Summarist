@@ -5,6 +5,7 @@ import { useState } from "react";
 import type { BookDetail } from "@/lib/BookDetail";
 import {
   addBookToLibrary,
+  getFirebaseApp,
   getFirebaseAuth,
   getUserProfile,
 } from "@/lib/firebaseClient";
@@ -50,6 +51,12 @@ export default function BookActions({ book }: { book: BookDetail }) {
       openAuthModal();
       return;
     }
+
+    console.log("addToLibrary debug", {
+      uid: user?.uid,
+      projectId: getFirebaseApp()?.options?.projectId,
+      currentUser: getFirebaseAuth()?.currentUser,
+    });
     setSaving(true);
     try {
       await addBookToLibrary(user, {
