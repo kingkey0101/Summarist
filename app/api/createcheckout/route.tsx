@@ -10,7 +10,7 @@ const stripe = new Stripe(stripeSecret ?? "", {
   apiVersion: "2025-11-17.clover",
 });
 
-// initialize Firebase Admin (support SERVICE_ACCOUNT JSON in env or ADC)
+// initialize Firebase Admin
 function initFirebaseAdmin() {
   if (admin.apps?.length) return admin.app();
 
