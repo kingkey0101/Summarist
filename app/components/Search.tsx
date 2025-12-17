@@ -56,14 +56,19 @@ export default function Search() {
       const ac = new AbortController();
       abortRef.current = ac;
 
-      const url = `https://us-central1-summaristt.cloudfunctions.net/getBooksByAuthorOrTitle?search=${encodeURIComponent(
-        query,
-      )}`;
+      const searchApiUrl =
+        process.env.NEXT_PUBLIC_SEARCH_API_URL ??
+        "https://us-central1-summaristt.cloudfunctions.net/getBooksByAuthorOrTitle";
+      const url = `${searchApiUrl}?search=${encodeURIComponent(query)}`;
 
       fetch(url, { signal: ac.signal })
         .then(async (res) => {
-          if (!res.ok) throw new Error("Search request failed");
+          if (!res.ok) {
+            console.error("Search API error:", res.status, res.statusText);
+            throw new Error(`Search request failed: ${res.status}`);
+          }
           const data = await res.json();
+          console.log("Search API response:", data); // Debug log
           // API may return array or object with items
           type SearchResponse = { items?: unknown[] } | unknown[];
           const searchData = data as SearchResponse;
