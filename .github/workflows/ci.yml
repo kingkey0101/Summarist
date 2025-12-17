@@ -51,8 +51,8 @@ jobs:
 
       - name: Ensure Biome linux runtime for local package
         run: |
-          # Ensure the local biome wrapper has its linux runtime available for repo scripts
-          npm install --no-save @biomejs/cli-linux-x64 || true
+          # Install the linux runtime directly for biome
+          npm install --save-dev @biomejs/cli-linux-x64@2.3.0
 
       - name: Ensure lightningcss native pkg (rebuild/install)
         run: |
@@ -82,6 +82,11 @@ jobs:
            echo "npm ci failed — falling back to npm install"
            npm install --no-audit --no-fund
           fi
+          
+      - name: Install Biome CLI for linting
+        run: |
+          # Install the linux runtime for biome
+          npm install --save-dev @biomejs/cli-linux-x64@2.3.0 || npm install -g @biomejs/biome@2.3.0
 
       - name: Run Biome lint
         run: npm run lint

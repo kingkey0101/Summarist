@@ -40,5 +40,8 @@
     "ts-node": "^10.9.2",
     "typescript": "^5.9.3",
     "vitest": "^3.2.4"
+  },
+  "optionalDependencies": {
+    "@biomejs/cli-linux-x64": "^2.3.0"
   }
 }
