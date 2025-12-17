@@ -137,7 +137,7 @@ export default function MyLibraryPage() {
 
   if (!userId) {
     return (
-      <main className="min-h-screen bg-gray-50 p-4 md:p-8">
+      <main className="min-h-screen bg-gray-50 p-4 md:p-8 md:pl-56">
         {/* <SideBar /> */}
         <div className="max-w-3xl mx-auto text-center py-12 md:py-20">
           <Image
@@ -164,7 +164,7 @@ export default function MyLibraryPage() {
   }
 
   return (
-    <main className="min-h-screen bg-gray-50 p-4 md:p-8">
+    <main className="min-h-screen bg-gray-50 p-4 md:p-8 md:pl-56">
       {/* <SideBar /> */}
       <div className="max-w-4xl mx-auto">
         <h1 className="text-2xl md:text-3xl font-semibold mb-4 md:mb-6">

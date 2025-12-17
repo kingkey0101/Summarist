@@ -73,7 +73,7 @@ export default function SettingsPage() {
   })();
 
   return (
-    <main className="min-h-screen bg-gray-50 p-4 md:p-8">
+    <main className="min-h-screen bg-gray-50 p-4 md:p-8 md:pl-56">
       <div className="max-w-4xl mx-auto">
         {!user ? (
           <div className="text-center py-12 md:py-20">
