@@ -6,9 +6,10 @@ import { useEffect, useState } from "react";
 type Book = {
   id: string;
   title: string;
-  subTitle: string;
-  imageLink: string;
-  author: string;
+  subTitle?: string;
+  imageLink?: string;
+  author?: string;
+  subscriptionRequired?: boolean;
 };
 
 export default function SelectedForYou({
@@ -18,7 +19,7 @@ export default function SelectedForYou({
 }) {
   const [book, setBook] = useState<Book | null>(null);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [_error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     let mounted = true;
@@ -27,14 +28,17 @@ export default function SelectedForYou({
       setError(null);
       try {
         const res = await fetch(apiUrl);
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        if (!res.ok) throw new Error("fetch failed");
         const data = await res.json();
-        const b: Book = Array.isArray(data) ? data[0] : data;
-        if (mounted) setBook(b ?? null);
+        if (mounted && Array.isArray(data) && data[0]) {
+          setBook(data[0]);
+        } else if (mounted && data) {
+          setBook(data as Book);
+        }
       } catch (err: unknown) {
-        if (mounted) setError((err as Error)?.message ?? "Failed");
+        setError((err as Error)?.message ?? "Failed");
       } finally {
-        if (mounted) setLoading(false);
+        setLoading(false);
       }
     }
     fetchOne();
@@ -42,55 +46,74 @@ export default function SelectedForYou({
       mounted = false;
     };
   }, [apiUrl]);
-  //   add loading
-  if (loading && !book) return <div>Loading...</div>;
-  if (error) return <div className="text-red-600">Error: {error}</div>;
-  if (!book) return <div>No recommendations</div>;
+
+  if (loading && !book)
+    return (
+      <section className="my-6 flex-1 pt-16">
+        <div className="max-w-[681px]">
+          <div className="animate-pulse rounded-lg bg-gray-100 h-44" />
+        </div>
+      </section>
+    );
+
+  if (!book) return null;
 
   return (
     <section className="my-6 flex-1 pt-16">
-      <h2
-        className="font-semibold text-[22px] mb-3"
-        style={{ textAlign: "left" }}
-      >
+      <h2 className="font-semibold text-[22px] mb-3 text-left">
         Selected just for you
       </h2>
 
-      <div
-        className="bg-[#fbefd6] flex items-stretch p-4 gap-4 rounded-lg shadow-sm"
-        style={{ width: 681, height: 188 }}
-      >
-        <div className="w-1/3 pr-4">
-          {book.subTitle && (
-            <div className="text-black text-[16px] mt-2">{book.subTitle}</div>
-          )}
-        </div>
-        <div className="w-px bg-[#bac8ce] self-stretch" />
-        <div className="w-1/3 flex justify-center items-center">
-          <div className="relative" style={{ width: 140, height: 140 }}>
-            <Image
-              src={book.imageLink ?? "/assets/window.svg"}
-              alt={book.title}
-              fill
-              style={{ objectFit: "cover" }}
-              sizes="160px"
-              priority
-            />
+      <div className="bg-[#fbefd6] flex flex-col md:flex-row items-stretch p-6 gap-6 rounded-lg shadow-sm max-w-[681px] w-full">
+        <div className="flex-1">
+          <h3 className="text-lg md:text-xl font-bold text-gray-900 mb-2">
+            {book.title}
+          </h3>
+          <div className="text-sm md:text-base text-gray-600 mb-3">
+            {book.author}
+          </div>
+          {book.subTitle ? (
+            <p className="text-sm md:text-base text-gray-700 mb-4 leading-relaxed">
+              {book.subTitle}
+            </p>
+          ) : null}
+
+          <div className="flex items-center gap-3">
+            <button
+              type="button"
+              className="flex items-center gap-2 bg-black text-white px-4 py-2 rounded-full text-sm font-medium hover:bg-gray-800 transition-colors"
+              aria-label="Play audio summary"
+            >
+              <svg
+                className="w-4 h-4 fill-current"
+                viewBox="0 0 24 24"
+                aria-hidden="true"
+              >
+                <path d="M8 5v14l11-7z" />
+              </svg>
+              3 mins 23 secs
+            </button>
           </div>
         </div>
-        <div className="flex flex-col items-start -ml-8">
-          <div className="font-semibold text-[16px]">{book.title}</div>
-          <div className="text-sm ">{book.author}</div>
+
+        <div className="flex-shrink-0 w-full md:w-[140px] h-[180px] md:h-auto rounded overflow-hidden bg-white relative">
+          {book.subscriptionRequired && (
+            <div className="absolute top-1 right-1 bg-black text-white text-xs px-2 py-0.5 rounded-full z-10">
+              Premium
+            </div>
+          )}
+          {book.imageLink ? (
+            <Image
+              src={book.imageLink}
+              alt={book.title}
+              width={140}
+              height={180}
+              className="w-full h-full object-cover"
+            />
+          ) : (
+            <div className="w-full h-full bg-gray-200" />
+          )}
         </div>
-        {/* 
-        <div className="w-1/3 flex flex-col items-start gap-3">
-          <button
-            className="btn"
-            onClick={() => window.alert(`Open ${book.title}`)}
-          >
-            View details
-          </button>
-        </div> */}
       </div>
     </section>
   );

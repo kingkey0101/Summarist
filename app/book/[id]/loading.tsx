@@ -1,6 +1,6 @@
 export default function Loading() {
   return (
-    <main className="p-8 md:ml-64">
+    <main className="p-8 md:pl-52">
       <div className="max-w-3xl mx-auto text-center py-20">
         <h2 className="text-lg font-medium">Loading book...</h2>
         <p className="text-sm text-gray-500 mt-2">
