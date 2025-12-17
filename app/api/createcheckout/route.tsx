@@ -10,7 +10,7 @@ const stripe = new Stripe(stripeSecret ?? "", {
   apiVersion: "2025-12-15.clover",
 });
 
-// initialize Firebase Admin
+// initialize Firebase admin
 function initFirebaseAdmin() {
   if (admin.apps?.length) return admin.app();
 
