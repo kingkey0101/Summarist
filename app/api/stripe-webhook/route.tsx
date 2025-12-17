@@ -25,8 +25,13 @@ function initFirebaseAdmin() {
     });
   }
 
-  // fallback to Application Default Credentials (e.g., Cloud Run with service account)
-  return admin.initializeApp();
+  // Only attempt ADC if we're in production (not during build)
+  if (process.env.NODE_ENV === "production" && process.env.VERCEL) {
+    return admin.initializeApp();
+  }
+
+  // For build time or development without credentials, return null
+  return null;
 }
 
 export async function POST(req: Request) {
@@ -51,6 +56,10 @@ export async function POST(req: Request) {
 
   // lazy init admin to keep cold-start impact small
   const firebaseApp = initFirebaseAdmin();
+  if (!firebaseApp) {
+    console.error("Firebase Admin not available");
+    return NextResponse.json({ error: "Service unavailable" }, { status: 503 });
+  }
   const db = admin.firestore(firebaseApp);
 
   try {

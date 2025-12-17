@@ -22,7 +22,13 @@ function initFirebaseAdmin() {
     });
   }
 
-  return admin.initializeApp();
+  // Only attempt ADC if we're not in build mode
+  if (process.env.NODE_ENV === "production" && process.env.VERCEL) {
+    return admin.initializeApp();
+  }
+
+  // For build time or development without credentials, return null
+  return null;
 }
 
 export async function POST(req: Request) {
@@ -53,6 +59,12 @@ export async function POST(req: Request) {
     // verify ID token and obtain uid
     try {
       const firebaseApp = initFirebaseAdmin();
+      if (!firebaseApp) {
+        return NextResponse.json(
+          { error: "Firebase not available" },
+          { status: 503 },
+        );
+      }
       const decoded = await admin.auth(firebaseApp).verifyIdToken(idToken);
       if (!decoded?.uid) {
         return NextResponse.json(
