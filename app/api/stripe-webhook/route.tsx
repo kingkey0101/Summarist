@@ -11,7 +11,7 @@ type SubscriptionWithPeriod = Stripe.Subscription & {
 const stripeSecretKey = process.env.STRIPE_SECRET_KEY ?? "";
 const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET ?? "";
 
-const stripe = new Stripe(stripeSecretKey, { apiVersion: "2025-11-17.clover" });
+const stripe = new Stripe(stripeSecretKey, { apiVersion: "2025-12-15.clover" });
 
 // initialize Firebase Admin (support SERVICE_ACCOUNT JSON in env or ADC)
 function initFirebaseAdmin() {

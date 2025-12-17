@@ -7,7 +7,7 @@ if (!stripeSecret) {
   console.warn("STRIPE_SECRET_KEY is not set");
 }
 const stripe = new Stripe(stripeSecret ?? "", {
-  apiVersion: "2025-11-17.clover",
+  apiVersion: "2025-12-15.clover",
 });
 
 // initialize Firebase Admin
