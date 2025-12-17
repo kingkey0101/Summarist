@@ -48,6 +48,8 @@ jobs:
 
       - name: Ensure lightningcss native pkg (rebuild/install)
         run: |
+          # Ensure lightningcss pkg directory exists
+          node ./scripts/ensure-lightningcss-pkg.js || true
           # Try to rebuild native modules from source for linux first
           npm rebuild --build-from-source lightningcss @tailwindcss/oxide || true
           # If rebuild didn't produce the required pkg, install linux-compatible package(s)
@@ -158,8 +160,13 @@ jobs:
 
       - name: Rebuild or install lightningcss (fix missing pkg)
         run: |
-          npm rebuild --build-from-source lightningcss @tailwindcss/oxide || true
-          npm install --no-save lightningcss@latest @tailwindcss/oxide@latest || true
+          # Force reinstall lightningcss with platform-specific binaries
+          npm uninstall lightningcss || true
+          npm install lightningcss@latest --build-from-source || npm install lightningcss@latest
+          # Run the custom script to ensure pkg directory exists
+          node ./scripts/ensure-lightningcss-pkg.js || true
+          # Verify pkg directory exists
+          ls -la node_modules/lightningcss/pkg/ || echo "pkg directory missing"
       - name: Build
         run: npm run build
   test:
