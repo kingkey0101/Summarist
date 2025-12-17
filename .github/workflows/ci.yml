@@ -147,16 +147,13 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-          cache: 'npm'
 
-      - name: Install
+      - name: Clean npm environment
         run: |
-          if npm ci; then
-           echo "npm ci succeeded"
-          else
-           echo "npm ci failed — falling back to npm install"
-           npm install --no-audit --no-fund
-          fi
+          rm -rf node_modules package-lock.json
+
+      - name: Install dependencies
+        run: npm install --no-audit --no-fund
 
       - name: Rebuild or install lightningcss (fix missing pkg)
         run: |
