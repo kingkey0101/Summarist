@@ -53,10 +53,7 @@ export default function Nav() {
             </Link>
 
             {/* Navigation Links */}
-            <div className="hidden md:flex space-x-8">
-              <LoginButton className="text-gray-600 hover:text-gray-900 font-medium">
-                Login
-              </LoginButton>
+            <div className="hidden md:flex items-center space-x-8">
               <a
                 href="/about"
                 className="text-gray-600 hover:text-gray-900 font-medium"
@@ -75,6 +72,9 @@ export default function Nav() {
               >
                 Help
               </a>
+              <LoginButton className="text-gray-600 hover:text-gray-900 font-medium">
+                Login
+              </LoginButton>
             </div>
 
             {/* Mobile Menu Button */}
