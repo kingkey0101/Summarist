@@ -1,6 +1,7 @@
 import type { JSX } from "react";
 import AudioPlayer from "@/app/components/AudioPlayer";
 import Nav from "@/app/components/Nav";
+import PremiumAccessGuard from "@/app/components/PremiumAccessGuard";
 import type { BookDetail } from "@/lib/BookDetail";
 
 async function fetchBookById(
@@ -90,50 +91,53 @@ export default async function PlayerPage(props: unknown): Promise<JSX.Element> {
   return (
     <>
       <Nav />
+      <PremiumAccessGuard book={book}>
+        <main className="p-8 md:pl-56 pb-32">
+          <div className="max-w-3xl mx-auto">
+            <div className="bg-white rounded-md p-6">
+              <h1 className="text-2xl font-black text-[#032b41]">
+                {book.title}
+              </h1>
+              {book.author && (
+                <div className="mt-2 text-sm text-gray-600">{book.author}</div>
+              )}
 
-      <main className="p-8 md:pl-56 pb-32">
-        <div className="max-w-3xl mx-auto">
-          <div className="bg-white rounded-md p-6">
-            <h1 className="text-2xl font-black text-[#032b41]">{book.title}</h1>
-            {book.author && (
-              <div className="mt-2 text-sm text-gray-600">{book.author}</div>
-            )}
+              <hr className="border-t border-gray-200 my-6" />
 
-            <hr className="border-t border-gray-200 my-6" />
-
-            <section className="prose max-w-none text-left">
-              <h2 className="text-lg font-semibold mb-2">Summary</h2>
-              <p className="text-gray-700 whitespace-pre-wrap">{summary}</p>
-            </section>
-          </div>
-        </div>
-      </main>
-
-      <div className="sidebar block">{/* <SideBar /> */}</div>
-
-      {book.audioLink && (
-        <div className="fixed bottom-0 left-0 right-0 md:left-52 z-50 pointer-events-auto">
-          <div className="max-w-7xl mx-auto px-4">
-            <div className="pb-2">
-              <AudioPlayer
-                src={book.audioLink}
-                title={book.title}
-                author={book.author ?? ""}
-                imageSrc={book.imageLink ?? null}
-                bookId={book.id}
-                bookInfo={{
-                  id: book.id,
-                  title: book.title,
-                  author: book.author,
-                  imageLink: book.imageLink,
-                  subTitle: book.subTitle,
-                  summary: book.summary,
-                }}
-              />
+              <section className="prose max-w-none text-left">
+                <h2 className="text-lg font-semibold mb-2">Summary</h2>
+                <p className="text-gray-700 whitespace-pre-wrap">{summary}</p>
+              </section>
             </div>
           </div>
-        </div>
-      )}
+
+          <div className="sidebar block">{/* <SideBar /> */}</div>
+
+          {book.audioLink && (
+            <div className="fixed bottom-0 left-0 right-0 md:left-52 z-50 pointer-events-auto">
+              <div className="max-w-7xl mx-auto px-4">
+                <div className="pb-2">
+                  <AudioPlayer
+                    src={book.audioLink}
+                    title={book.title}
+                    author={book.author ?? ""}
+                    imageSrc={book.imageLink ?? null}
+                    bookId={book.id}
+                    bookInfo={{
+                      id: book.id,
+                      title: book.title,
+                      author: book.author,
+                      imageLink: book.imageLink,
+                      subTitle: book.subTitle,
+                      summary: book.summary,
+                    }}
+                  />
+                </div>
+              </div>
+            </div>
+          )}
+        </main>
+      </PremiumAccessGuard>
     </>
   );
 }

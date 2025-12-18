@@ -77,13 +77,59 @@ export async function createProfile(user: User) {
   const db = getFirebaseDb();
   if (!db) return;
   const ref = doc(db, "profiles", user.uid);
-  await setDoc(ref, {
-    uid: user.uid,
-    email: user.email ?? null,
-    displayName: user.displayName ?? null,
-    photoURL: user.photoURL ?? null,
-    createdAt: serverTimestamp(),
-  });
+
+  // Check if profile already exists
+  const existingProfile = await getDoc(ref);
+
+  if (!existingProfile.exists()) {
+    // Only create profile if it doesn't exist - start users with free plan
+    await setDoc(ref, {
+      uid: user.uid,
+      email: user.email ?? null,
+      displayName: user.displayName ?? null,
+      photoURL: user.photoURL ?? null,
+      subscribed: false, // New users start as free (not subscribed)
+      plan: "free", // Default to free plan for new users
+      subscriptionDate: null,
+      createdAt: serverTimestamp(),
+    });
+    console.log(`Created new profile for user ${user.uid} with free plan`);
+  } else {
+    // Just update user info, preserve existing subscription
+    await setDoc(
+      ref,
+      {
+        uid: user.uid,
+        email: user.email ?? null,
+        displayName: user.displayName ?? null,
+        photoURL: user.photoURL ?? null,
+        updatedAt: serverTimestamp(),
+      },
+      { merge: true },
+    );
+    console.log(`Updated existing profile for user ${user.uid}`);
+  }
+}
+
+export async function updateUserSubscription(
+  user: User,
+  plan: "free" | "basic" | "premium-monthly" | "premium-yearly",
+  isSubscribed: boolean,
+) {
+  const db = getFirebaseDb();
+  if (!db) return;
+
+  const profileRef = doc(db, "profiles", user.uid);
+  await setDoc(
+    profileRef,
+    {
+      subscribed: isSubscribed,
+      plan: plan,
+      subscriptionDate: isSubscribed ? serverTimestamp() : null,
+      updatedAt: serverTimestamp(),
+    },
+    { merge: true },
+  );
 }
 
 export async function getUserProfile(

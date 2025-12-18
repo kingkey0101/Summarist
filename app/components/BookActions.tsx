@@ -2,17 +2,18 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { useSubscription } from "@/app/context/SubscriptionContext";
 import type { BookDetail } from "@/lib/BookDetail";
 import {
   addBookToLibrary,
   getFirebaseApp,
   getFirebaseAuth,
-  getUserProfile,
 } from "@/lib/firebaseClient";
 
 export default function BookActions({ book }: { book: BookDetail }) {
   const router = useRouter();
   const [saving, setSaving] = useState(false);
+  const { subscription, hasPremiumAccess } = useSubscription();
 
   function openAuthModal() {
     if (typeof window !== "undefined") {
@@ -28,15 +29,20 @@ export default function BookActions({ book }: { book: BookDetail }) {
       return;
     }
 
-    let profile = null;
-    try {
-      profile = await getUserProfile(user.uid);
-    } catch (err) {
-      console.warn("profile fetch failed", err);
-    }
-    const subscribed = Boolean(profile?.subscribed);
+    // Strong check for premium access
+    const isPremiumBook =
+      book.type === "premium" || book.subscriptionRequired === true;
+    const userHasPremiumAccess = hasPremiumAccess();
 
-    if (book.type === "premium" && !subscribed) {
+    if (isPremiumBook && !userHasPremiumAccess) {
+      console.log(`BookActions Debug: Premium book access denied.`, {
+        bookType: book.type,
+        subscriptionRequired: book.subscriptionRequired,
+        userPlan: subscription.plan,
+        isSubscribed: subscription.isSubscribed,
+        hasPremiumAccess: userHasPremiumAccess,
+        subscriptionState: subscription,
+      });
       router.push("/choose-plan");
       return;
     }
