@@ -1,15 +1,14 @@
 "use client";
 
-import type { User } from "firebase/auth";
 import Image from "next/image";
-import { useEffect, useState } from "react";
-import { getFirebaseAuth } from "@/lib/firebaseClient";
+import { useState } from "react";
+import { useSubscription } from "@/app/context/SubscriptionContext";
 
-type PlanId = "monthly" | "yearly";
+type PlanId = "premium-monthly" | "premium-yearly";
 
 const PLANS = [
   {
-    id: "yearly" as PlanId,
+    id: "premium-yearly" as PlanId,
     title: "Premium Plus Yearly",
     priceLabel: "$99.99/year",
     priceCents: 9999,
@@ -17,8 +16,8 @@ const PLANS = [
     subtitle: "7-day free trial included",
   },
   {
-    id: "monthly" as PlanId,
-    title: "Premium Monthly",
+    id: "premium-monthly" as PlanId,
+    title: "Premium Plus Monthly",
     priceLabel: "$9.99/month",
     priceCents: 999,
     interval: "month" as const,
@@ -46,61 +45,43 @@ const FAQ_ITEMS = [
 ];
 
 export default function ChoosePlanPage() {
-  const [_user, setUser] = useState<User | null>(null);
-  const [selected, setSelected] = useState<PlanId>("yearly");
+  const { user, simulateSubscription } = useSubscription();
+  const [selected, setSelected] = useState<PlanId>("premium-yearly");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState(false);
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null);
-
-  useEffect(() => {
-    const auth = getFirebaseAuth();
-    if (!auth) return;
-    setUser(auth.currentUser ?? null);
-    const unsub = auth.onAuthStateChanged((u) => setUser(u));
-    return () => unsub();
-  }, []);
 
   async function handleCheckout(planId: PlanId) {
     setError(null);
+    setSuccess(false);
+
     const plan = PLANS.find((p) => p.id === planId);
     if (!plan) return;
 
-    const auth = getFirebaseAuth();
-    const currentUser = auth?.currentUser ?? null;
-    if (!currentUser) {
+    if (!user) {
       window.dispatchEvent(new CustomEvent("open-auth-modal"));
       return;
     }
 
     setLoading(true);
     try {
-      console.log("Getting ID token for user:", currentUser.uid);
-      const idToken = await currentUser.getIdToken();
-      console.log("ID token obtained, length:", idToken.length);
+      // Simulate processing time (like Stripe would take)
+      await new Promise((resolve) => setTimeout(resolve, 2000));
 
-      const res = await fetch("/api/createcheckout", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          planId,
-          priceCents: plan.priceCents,
-          interval: plan.interval,
-          title: plan.title,
-          idToken,
-        }),
-      });
+      // Simulate subscription activation
+      await simulateSubscription(planId);
 
-      const json = await res.json();
-      console.log("API response:", { status: res.status, json });
+      console.log(`🎉 Demo: Successfully "purchased" ${plan.title}!`);
+      setSuccess(true);
 
-      if (res.ok && json?.url) {
-        window.location.href = json.url;
-      } else {
-        throw new Error(json?.error ?? "Failed to create checkout session");
-      }
+      // Redirect to for-you page after success
+      setTimeout(() => {
+        window.location.href = "/for-you";
+      }, 2000);
     } catch (err: unknown) {
-      console.error("Checkout error:", err);
-      setError((err as Error)?.message ?? "Failed to create checkout");
+      console.error("Subscription simulation error:", err);
+      setError((err as Error)?.message ?? "Failed to activate subscription");
     } finally {
       setLoading(false);
     }
@@ -247,27 +228,28 @@ export default function ChoosePlanPage() {
         <div className="space-y-6 mt-6">
           <button
             type="button"
-            onClick={() => setSelected("yearly")}
+            onClick={() => setSelected("premium-yearly")}
             onKeyDown={(e) => {
-              if (e.key === "Enter" || e.key === " ") setSelected("yearly");
+              if (e.key === "Enter" || e.key === " ")
+                setSelected("premium-yearly");
             }}
             className={`cursor-pointer rounded-lg p-6 border-2 flex items-start gap-4 text-left transition-shadow ${
-              selected === "yearly"
+              selected === "premium-yearly"
                 ? "border-emerald-400 shadow-md bg-emerald-50"
                 : "border-gray-300 bg-white"
             }`}
-            aria-pressed={selected === "yearly"}
+            aria-pressed={selected === "premium-yearly"}
           >
             <div className="flex items-start pt-1">
               <div
                 className={`w-5 h-5 mr-3 rounded-full border flex items-center justify-center ${
-                  selected === "yearly"
+                  selected === "premium-yearly"
                     ? "border-emerald-600"
                     : "border-gray-400"
                 }`}
                 aria-hidden
               >
-                {selected === "yearly" ? (
+                {selected === "premium-yearly" ? (
                   <span className="w-2 h-2 rounded-full bg-emerald-600 block" />
                 ) : null}
               </div>
@@ -291,27 +273,28 @@ export default function ChoosePlanPage() {
 
           <button
             type="button"
-            onClick={() => setSelected("monthly")}
+            onClick={() => setSelected("premium-monthly")}
             onKeyDown={(e) => {
-              if (e.key === "Enter" || e.key === " ") setSelected("monthly");
+              if (e.key === "Enter" || e.key === " ")
+                setSelected("premium-monthly");
             }}
             className={`cursor-pointer rounded-lg p-6 border-2 flex items-start gap-4 text-left transition-shadow ${
-              selected === "monthly"
+              selected === "premium-monthly"
                 ? "border-emerald-400 shadow-md bg-emerald-50"
                 : "border-gray-300 bg-white"
             }`}
-            aria-pressed={selected === "monthly"}
+            aria-pressed={selected === "premium-monthly"}
           >
             <div className="flex items-start pt-1">
               <div
                 className={`w-5 h-5 mr-3 rounded-full border flex items-center justify-center ${
-                  selected === "monthly"
+                  selected === "premium-monthly"
                     ? "border-emerald-600"
                     : "border-gray-400"
                 }`}
                 aria-hidden
               >
-                {selected === "monthly" ? (
+                {selected === "premium-monthly" ? (
                   <span className="w-2 h-2 rounded-full bg-emerald-600 block" />
                 ) : null}
               </div>
@@ -329,6 +312,28 @@ export default function ChoosePlanPage() {
         </div>
 
         {error && <div className="mt-4 text-sm text-red-600">{error}</div>}
+        {success && (
+          <div className="mt-4 p-4 bg-green-50 border border-green-200 rounded-lg">
+            <div className="flex items-center">
+              <svg
+                className="w-5 h-5 text-green-500 mr-2"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+              >
+                <title>Success checkmark</title>
+                <path
+                  fillRule="evenodd"
+                  d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                  clipRule="evenodd"
+                />
+              </svg>
+              <div className="text-sm text-green-800">
+                <strong>Success!</strong> Your subscription has been activated.
+                Redirecting to your books...
+              </div>
+            </div>
+          </div>
+        )}
 
         <div className="mt-8 flex justify-center">
           <button
@@ -341,14 +346,14 @@ export default function ChoosePlanPage() {
                 : "bg-emerald-500 hover:bg-emerald-600"
             }`}
           >
-            {selected === "yearly"
+            {selected === "premium-yearly"
               ? "Start your free 7-day trial"
               : "Start monthly subscription"}
           </button>
         </div>
 
         <div className="text-xs text-gray-500 mt-3 text-center">
-          {selected === "yearly"
+          {selected === "premium-yearly"
             ? "Cancel your trial at any time before it ends, and you won't be charged."
             : "Monthly billing. Cancel anytime."}
         </div>

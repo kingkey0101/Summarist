@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useEffect, useState } from "react";
+import PremiumBadge from "./PremiumBadge";
 
 type Book = {
   id: string;
@@ -10,6 +11,7 @@ type Book = {
   imageLink?: string;
   author?: string;
   subscriptionRequired?: boolean;
+  type?: string;
 };
 
 export default function SelectedForYou({
@@ -97,11 +99,13 @@ export default function SelectedForYou({
         </div>
 
         <div className="flex-shrink-0 w-full md:w-[140px] h-[180px] md:h-auto rounded overflow-hidden bg-white relative">
-          {book.subscriptionRequired && (
-            <div className="absolute top-1 right-1 bg-black text-white text-xs px-2 py-0.5 rounded-full z-10">
-              Premium
-            </div>
-          )}
+          <div className="absolute top-1 right-1 z-10">
+            <PremiumBadge
+              bookType={book.type}
+              subscriptionRequired={book.subscriptionRequired}
+              className="text-xs"
+            />
+          </div>
           {book.imageLink ? (
             <Image
               src={book.imageLink}

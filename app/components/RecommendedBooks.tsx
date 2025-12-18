@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import PremiumBadge from "./PremiumBadge";
 
 type Book = {
   id: string;
@@ -14,6 +15,7 @@ type Book = {
   averageRating?: number;
   totalRating?: number;
   audioLink?: string;
+  type?: string;
 };
 
 export default function RecoommendedBooks({
@@ -86,11 +88,13 @@ export default function RecoommendedBooks({
                 className="snap-start shrink-0 w-64 bg-white rounded-lg p-4 shadow-sm cursor-pointer focus:outline-none text-left"
               >
                 <div className="w-full h-40 bg-gray-100 rounded overflow-hidden mb-3 flex items-center justify-center relative">
-                  {b.subscriptionRequired && (
-                    <div className="absolute top-2 right-2 bg-black text-white text-xs px-2 py-1 rounded z-10">
-                      Premium
-                    </div>
-                  )}
+                  <div className="absolute top-2 right-2 z-10">
+                    <PremiumBadge
+                      bookType={b.type}
+                      subscriptionRequired={b.subscriptionRequired}
+                      className="text-xs"
+                    />
+                  </div>
                   {b.imageLink ? (
                     <Image
                       src={b.imageLink}
@@ -149,11 +153,13 @@ export default function RecoommendedBooks({
               className="bg-white rounded-lg p-4 shadow-sm cursor-pointer focus:outline-none text-left"
             >
               <div className="w-full h-40 bg-gray-100 rounded overflow-hidden mb-3 flex items-center justify-center relative">
-                {b.subscriptionRequired && (
-                  <div className="absolute top-2 right-2 bg-black text-white text-xs px-2 py-1 rounded-full z-10">
-                    Premium
-                  </div>
-                )}
+                <div className="absolute top-2 right-2 z-10">
+                  <PremiumBadge
+                    bookType={b.type}
+                    subscriptionRequired={b.subscriptionRequired}
+                    className="text-xs"
+                  />
+                </div>
                 {b.imageLink ? (
                   <Image
                     src={b.imageLink}

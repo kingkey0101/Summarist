@@ -4,6 +4,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import AuthModalHost from "./components/AuthModalHost";
 import ConditionalLayout from "./components/ConditionalLayout";
+import { SubscriptionProvider } from "./context/SubscriptionContext";
 import ReduxProvider from "./providers/ReduxProvider";
 
 const geistSans = Geist({
@@ -32,8 +33,10 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <ReduxProvider>
-          <AuthModalHost />
-          <ConditionalLayout>{children}</ConditionalLayout>
+          <SubscriptionProvider>
+            <AuthModalHost />
+            <ConditionalLayout>{children}</ConditionalLayout>
+          </SubscriptionProvider>
         </ReduxProvider>
         <Analytics />
       </body>

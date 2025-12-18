@@ -3,7 +3,11 @@
 import { onAuthStateChanged } from "firebase/auth";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import { getFirebaseAuth, upsertUser } from "@/lib/firebaseClient";
+import {
+  createProfile,
+  getFirebaseAuth,
+  upsertUser,
+} from "@/lib/firebaseClient";
 import AuthModal from "./AuthModal";
 
 export default function AuthModalHost() {
@@ -36,8 +40,11 @@ export default function AuthModalHost() {
       if (!u) return;
       try {
         await upsertUser(u);
+        // Create profile with basic subscription for new users
+        await createProfile(u);
+        console.log("User profile created/updated with basic subscription");
       } catch (err) {
-        console.error("upsertUser failed", err);
+        console.error("User setup failed", err);
       }
       window.dispatchEvent(new CustomEvent("close-auth-modal"));
       // Always route to For You page after successful authentication
