@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import PremiumBadge from "./PremiumBadge";
 
@@ -19,9 +20,23 @@ export default function SelectedForYou({
 }: {
   apiUrl: string;
 }) {
+  const router = useRouter();
   const [book, setBook] = useState<Book | null>(null);
   const [loading, setLoading] = useState(false);
   const [_error, setError] = useState<string | null>(null);
+
+  function handleBookClick() {
+    if (book?.id) {
+      router.push(`/book/${encodeURIComponent(book.id)}`);
+    }
+  }
+
+  function handlePlayClick(e: React.MouseEvent) {
+    e.stopPropagation();
+    if (book?.id) {
+      router.push(`/player/${encodeURIComponent(book.id)}`);
+    }
+  }
 
   useEffect(() => {
     let mounted = true;
@@ -66,7 +81,19 @@ export default function SelectedForYou({
         Selected just for you
       </h2>
 
-      <div className="bg-[#fbefd6] flex flex-col md:flex-row items-stretch p-6 gap-6 rounded-lg shadow-sm max-w-[681px] w-full">
+      <div
+        className="bg-[#fbefd6] flex flex-col md:flex-row items-stretch p-6 gap-6 rounded-lg shadow-sm max-w-[681px] w-full cursor-pointer hover:bg-[#f9e6c4] transition-colors"
+        onClick={handleBookClick}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            handleBookClick();
+          }
+        }}
+        role="button"
+        tabIndex={0}
+        aria-label={`View details for ${book.title}`}
+      >
         <div className="flex-1">
           <h3 className="text-lg md:text-xl font-bold text-gray-900 mb-2">
             {book.title}
@@ -83,7 +110,8 @@ export default function SelectedForYou({
           <div className="flex items-center gap-3">
             <button
               type="button"
-              className="flex items-center gap-2 bg-black text-white px-4 py-2 rounded-full text-sm font-medium hover:bg-gray-800 transition-colors"
+              onClick={handlePlayClick}
+              className="flex items-center gap-2 bg-black text-white px-4 py-2 rounded-full text-sm font-medium hover:bg-gray-800 transition-colors z-10 relative"
               aria-label="Play audio summary"
             >
               <svg
