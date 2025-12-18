@@ -129,6 +129,35 @@ export async function addBookToLibrary(
   }
 }
 
+export async function markBookAsFinished(
+  user: User,
+  book: Record<string, unknown>,
+) {
+  const db = getFirebaseDb();
+  if (!db) return;
+  try {
+    const ref = doc(
+      db,
+      "users",
+      user.uid,
+      "finished",
+      String(book.id ?? Date.now()),
+    );
+    await setDoc(
+      ref,
+      {
+        ...book,
+        finishedAt: serverTimestamp(),
+      },
+      { merge: true },
+    );
+    console.log("Book marked as finished successfully");
+  } catch (err) {
+    console.error("markBookAsFinished error:", err);
+    throw err;
+  }
+}
+
 // dev debug helpers (safe to remove after debugging)
 if (typeof window !== "undefined") {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

@@ -40,10 +40,8 @@ export default function AuthModalHost() {
         console.error("upsertUser failed", err);
       }
       window.dispatchEvent(new CustomEvent("close-auth-modal"));
-      if (openedByUserRef.current) {
-        openedByUserRef.current = false;
-        router.push("/for-you");
-      }
+      // Always route to For You page after successful authentication
+      router.push("/for-you");
     });
     return () => unsub();
   }, [router]);

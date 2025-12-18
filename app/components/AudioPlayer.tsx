@@ -1,9 +1,8 @@
 "use client";
 
-import { doc, serverTimestamp, setDoc } from "firebase/firestore";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
-import { getFirebaseAuth, getFirebaseDb } from "@/lib/firebaseClient";
+import { getFirebaseAuth, markBookAsFinished } from "@/lib/firebaseClient";
 
 type Props = {
   src: string;
@@ -45,17 +44,16 @@ export default function AudioPlayer({
     const onLoaded = () => setDuration(a.duration || 0);
     const onEnd = async () => {
       setPlaying(false);
-      if (bookId) {
+      if (bookId && bookInfo) {
         try {
           const auth = getFirebaseAuth();
           const user = auth?.currentUser ?? null;
-          const db = getFirebaseDb();
-          if (user && db) {
-            const p = doc(db, "users", user.uid, "finished", String(bookId));
-            await setDoc(p, {
-              finishedAt: serverTimestamp(),
-              ...(bookInfo ?? {}),
+          if (user) {
+            await markBookAsFinished(user, {
+              id: bookId,
+              ...bookInfo,
             });
+            console.log("Book marked as finished:", bookInfo.title || bookId);
           }
         } catch (err) {
           console.warn("markFinished failed", err);
