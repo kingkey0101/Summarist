@@ -120,6 +120,15 @@ export default async function PlayerPage(props: unknown): Promise<JSX.Element> {
                 title={book.title}
                 author={book.author ?? ""}
                 imageSrc={book.imageLink ?? null}
+                bookId={book.id}
+                bookInfo={{
+                  id: book.id,
+                  title: book.title,
+                  author: book.author,
+                  imageLink: book.imageLink,
+                  subTitle: book.subTitle,
+                  summary: book.summary,
+                }}
               />
             </div>
           </div>

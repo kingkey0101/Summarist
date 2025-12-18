@@ -44,16 +44,18 @@ export default function AudioPlayer({
     const onLoaded = () => setDuration(a.duration || 0);
     const onEnd = async () => {
       setPlaying(false);
-      if (bookId && bookInfo) {
+      if (bookId) {
         try {
           const auth = getFirebaseAuth();
           const user = auth?.currentUser ?? null;
           if (user) {
-            await markBookAsFinished(user, {
+            const bookData = bookInfo || {
               id: bookId,
-              ...bookInfo,
-            });
-            console.log("Book marked as finished:", bookInfo.title || bookId);
+              title: title || "Unknown Title",
+              author: author || "Unknown Author",
+            };
+            await markBookAsFinished(user, bookData);
+            console.log("Book marked as finished:", bookData.title || bookId);
           }
         } catch (err) {
           console.warn("markFinished failed", err);
@@ -69,7 +71,7 @@ export default function AudioPlayer({
       a.removeEventListener("loadedmetadata", onLoaded);
       a.removeEventListener("ended", onEnd);
     };
-  }, [bookId, bookInfo]);
+  }, [bookId, bookInfo, title, author]);
 
   useEffect(() => {
     const a = audioRef.current;
